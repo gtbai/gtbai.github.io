@@ -1,10 +1,3 @@
-function stripper(content){
-    var wrapper = $("<div>"+ content +"</div>");
-    wrapper.find("script,style").remove();
-    $(".gutter",wrapper).remove();
-    return wrapper.html();
-}
-
 var searchFunc = function(path, search_id, content_id) {
     'use strict';
     $.ajax({
@@ -15,14 +8,14 @@ var searchFunc = function(path, search_id, content_id) {
             var datas = $( "entry", xmlResponse ).map(function() {
                 return {
                     title: $( "title", this ).text(),
-                    content: stripper($("content",this).text()),
+                    content: $("content",this).text(),
                     url: $( "url" , this).text()
                 };
             }).get();
             var $input = document.getElementById(search_id);
             var $resultContent = document.getElementById(content_id);
             $input.addEventListener('input', function(){
-                var str='<ul class=\"search-result-list\">';                
+                var str='<ul class=\"search-result-list\">';
                 var keywords = this.value.trim().toLowerCase().split(/[\s\-]+/);
                 $resultContent.innerHTML = "";
                 if (this.value.trim().length <= 0) {
@@ -61,24 +54,25 @@ var searchFunc = function(path, search_id, content_id) {
                         var content = data.content.trim().replace(/<[^>]+>/g,"");
                         if (first_occur >= 0) {
                             // cut out 100 characters
-                            var start = first_occur - 20;
-                            var end = first_occur + 80;
+                            var start = first_occur - 30;
+                            var outLength = 78;
                             if(start < 0){
                                 start = 0;
                             }
-                            if(start == 0){
-                                end = 100;
+                            if (start + outLength > content.length){
+                                if(content.length < outLength){
+                                    outLength = content.length - start;
+                                }else{
+                                    start = content.length - outLength;
+                                }
                             }
-                            if(end > content.length){
-                                end = content.length;
-                            }
-                            var match_content = content.substring(start, end); 
+                            var match_content = content.substr(start, outLength);
                             // highlight all keywords
                             keywords.forEach(function(keyword){
                                 var regS = new RegExp(keyword, "gi");
                                 match_content = match_content.replace(regS, "<em class=\"search-keyword\">"+keyword+"</em>");
                             });
-                            
+
                             str += "<p class=\"search-result\">" + match_content +"...</p>"
                         }
                         str += "</li>";
