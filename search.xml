@@ -83,7 +83,7 @@
 <ul>
 <li>输入: $x \epsilon X$，用户申请</li>
 <li>输出: $y \epsilon Y$，批准申请是好／是坏</li>
-<li>需要学习的潜在模式：<br>  $$f: X -&gt; Y $$<br>理想的信用卡批准定理</li>
+<li>需要学习的潜在模式：<br>  $$f: X \to Y $$<br>理想的信用卡批准定理</li>
 <li>数据&lt;-&gt;训练例子：<br>  $$D = {(x_1, y_1), (x_2, y_2), \cdots, (x_N, y_N)}$$<br>学习到的信用卡批准定理</li>
 </ul>
 <p>问题符号化：<br><img src="http://oky5aqxds.bkt.clouddn.com/1-4.png" alt="图1-4"></p>
