@@ -4,10 +4,115 @@
   
     
     <entry>
+      <title><![CDATA[机器学习基石第二讲：Learning to Answer Yes/No 笔记]]></title>
+      <url>http://gtbai.github.io/2017/02/09/mlfound-2/</url>
+      <content type="html"><![CDATA[<h2 id="Perceptron-Hypothesis-Set"><a href="#Perceptron-Hypothesis-Set" class="headerlink" title="Perceptron Hypothesis Set"></a>Perceptron Hypothesis Set</h2><p>信用卡批准问题回顾：<br><img src="http://oky5aqxds.bkt.clouddn.com/2-1.png" alt="图2-1"></p>
+<p>那么对于这个问题，$H$究竟长什么样呢？</p>
+<p>这里，我们可以把每个用户表示成一个向量：<br>$$x = (x_1, x_2, \cdots, x_d)$$</p>
+<p>并计算一个加权的“分数”：</p>
+<ul>
+<li>如果$\sum_{i=1}^dw_ix_i &gt; threshold$，那么批准信用卡的申请</li>
+<li>如果$\sum_i=1^dw_ix_i &lt; threshold$，那么拒绝信用卡的申请</li>
+</ul>
+<p>输出空间为$Y: {+1(good), -1(bad)}$。边界情况0经常被我们忽略，<br>因为它很少发生，也不太重要。那么我们的假设就是一个线性函数$h \epsilon H$：<br>$$h(x) = sign((\sum_{i=1}^dw_ix_i)-threshold)$$<br>这个机器学习假设函数被叫做感知机（Perceptron），来源于早期类神经网络的研究者，因为很像人大脑中的一个神经元而得名。</p>
+<p>这个$h$形式略麻烦，这里从符号上进行简化：<br><img src="http://oky5aqxds.bkt.clouddn.com/2-2.png" alt="图2-2"></p>
+<p>使得每一个向量$\mathbf w$都表示一个假设函数$h$，而每一个向量$\mathbf<br>x$都表示一个用户。</p>
+<p>这么说起来还是很抽象，那么每一个$h$到底长什么样呢？这里有一个二维的例子：<br><img src="http://oky5aqxds.bkt.clouddn.com/2-3.png" alt="图2-3"></p>
+<h2 id="Perceptron-Learning-Algorithm-PLA"><a href="#Perceptron-Learning-Algorithm-PLA" class="headerlink" title="Perceptron Learning Algorithm (PLA)"></a>Perceptron Learning Algorithm (PLA)</h2><p>现在我们的任务就是从所有的感知机（线、平面等）中选出我们想要的$g$：</p>
+<ul>
+<li>我们想要$g \approx f$。但是很难，因为$f$我们不知道</li>
+<li>我们只知道我们的资料是从$f$产生的，那我们可以要求在我们所拥有的数据$D$上，有：<br>$$g(x_n) = f(x_n) = y_n$$</li>
+<li>但是即使到这一步了，也不是太容易。因为$H$无限大</li>
+<li>那我们的idea是：从一个不太好的$g_0$出发，然后不断地参考它在$D$上的错误<br>来修正它。 接下来，我们会用$\mathbf w_0$来代表$g_0$。</li>
+</ul>
+<p>那么完整的PLA算法将是这样的：<br><img src="http://oky5aqxds.bkt.clouddn.com/2-4.png" alt="图2-4"><br>其中更新的思路大概是这样：</p>
+<ul>
+<li>如果在某$\mathbf x$处，其本身的label是$y=1$，结果$h$却输出$y=-1$，<br>那么说明$\mathbf w$和$\mathbf x$的夹角太<strong>大</strong>，可以在$\mathbf w$上加上<br>$y\mathbf x$让它向$\mathbf x$<strong>靠近</strong>一些。</li>
+<li>如果在某$\mathbf x$处，其本身的label是$y=-1$，结果$h$却输出$y=1$，<br>那么说明$\mathbf w$和$\mathbf x$的夹角太<strong>小</strong>，可以在$\mathbf w$上加上<br>$y\mathbf x$让它向$\mathbf x$<strong>远离</strong>一些。</li>
+</ul>
+<p>其中的哲学可以说是：</p>
+<blockquote>
+<p>知错能改，善莫大焉。</p>
+</blockquote>
+<p>常见的PLA实现方式有：</p>
+<p><strong>循环PLA</strong></p>
+<ol>
+<li>对$t=0,1,\ldots$<ol>
+<li>找到$w<em>t$犯的<strong>下一个</strong>错误$(x</em>{n(t)}, y_{n(t)})$ s.t.<br>$$sign(\mathbf w<em>t^T \mathbf x</em>{n(t)}) \neq y_{n(t)}$$</li>
+<li>按照以下方式纠正这个错误：<br>$$\mathbf w<em>{t+1} \leftarrow \mathbf w</em>{t}+y<em>{n(t)}\mathbf x</em>{n(t)}$$</li>
+</ol>
+</li>
+<li>直到在一轮完整的循环中找不到错误</li>
+</ol>
+<p>其中<strong>下一个</strong>既可以按照自然循环顺序$(1,2,\cdots,N)$来遍历，也可以通过提前计算的随机循环顺序来遍历。</p>
+<p>既然演算法停的时候就会找出一个好的Perceptron，那么：</p>
+<ul>
+<li>算法一定会停吗？<ul>
+<li>按照自然循环会停吗？</li>
+<li>按照随机循环会停吗？</li>
+<li>其他的变种循环方式会停吗？</li>
+</ul>
+</li>
+<li>以及，$g$和$f$像吗？<ul>
+<li>就算在训练集$D$上想，在$D$以外像吗？</li>
+<li>如果在$D$上不停的话，$g$和$f$的关系又会怎么样呢？</li>
+</ul>
+</li>
+</ul>
+<p>我们接下来试图证明，在一些情况下，循环过足够多次数后，<strong>PLA总会停下来</strong>。</p>
+<h2 id="Guarantee-of-PLA"><a href="#Guarantee-of-PLA" class="headerlink" title="Guarantee of PLA"></a>Guarantee of PLA</h2><p><strong>线性可分</strong></p>
+<blockquote>
+<p>如果PLA能停下来，那么一个必要条件是数据集$D$允许某个$\mathbf{w}$不犯错误，此时我们称$D$为<strong>线性可分</strong>。</p>
+</blockquote>
+<p>那么假设数据集$D$是线性可分的，PLA一定会停吗？</p>
+<p>线性可分 $\Leftrightarrow$ 存在一个完美的$\mathbf w_f$使得$y_n = sign(\mathbf w_f^T \mathbf x_n)$.<br>$\mathbf w_f$是完美的，因此每一个$\mathbf x<em>n$都完美地远离分界线：<br>$$y</em>{n(t)}\mathbf w<em>f^T \mathbf x</em>{n(t)} &gt; \min_n y_n\mathbf w_f^T \mathbf x<em>n &gt; 0 $$<br>通过对于任意的错误$(x</em>{n(t)}, y_{n(t)})$更新，我们有：<br>    $$<br>    \begin{align}<br>        \mathbf{w}<em>f^T\cdot{\mathbf w</em>{t+1}} &amp; = \mathbf w_f^T(\mathbf w<em>t + y</em>{n(t)}\mathbf x_{n(t)}) \<br>                    &amp; \ge \mathbf w_f^T\mathbf w<em>t + \min</em>{n}y_n\mathbf w_f^T\mathbf x_n \<br>                    &amp; &gt; \mathbf{w}_f^T\mathbf{w}_t + 0<br>    \end{align}<br>    $$<br>上面的结果实际上表明，每次纠正错误后，$\mathbf{w}_f$和$\mathbf{w}_t$的内积变大了。可能有两个原因：</p>
+<ul>
+<li>$\mathbf{w}_f$和$\mathbf{w}_t$的夹角变小了。</li>
+<li>$\mathbf{w}_t$的长度变大了。<br>我们当然希望是第一种情况发生了，这样我们就能说明$\mathbf{w}_t$在不断向$\mathbf{w}_f$靠近。那么我们如何说明呢？</li>
+</ul>
+<p>我们还没有利用一个性质，那就是$\mathbf{w}<em>t $ 在 $(\mathbf{x}</em>{n(t)}, y_{n(t)})$处犯了错误：<br>    $$ sign(\mathbf{w}<em>t^T\mathbf{x}</em>{n(t)}) \neq y<em>{n(t)} \Leftrightarrow<br>       y</em>{n(t)}\mathbf{w}<em>t^T\mathbf{x}</em>{n(t)} \le 0 $$</p>
+<p>我们可以利用这个性质证明：$\mathbf{w}_t$其实变长的不太快，即使是关于<strong>最长的</strong>$\mathbf{x}<em>n$进行更新时：<br>    $$<br>    \begin{align}<br>    {|\mathbf{w}</em>{t+1}|}^2 &amp; = {|\mathbf{w}<em>{t} +y</em>{n(t)} \mathbf{x}<em>{n(t)}|}^2 \<br>                             &amp; = {|\mathbf{w}</em>{t}|}^2 + 2y<em>{n(t)}\mathbf{w}</em>{t}^T\mathbf{x}<em>{n(t)} + {| y</em>{n(t)}\mathbf{x}<em>{n(t)} |}^2 \<br>                             &amp; \le {|\mathbf{w}</em>{t}|}^2 + 0 + {| y<em>{n(t)}\mathbf{x}</em>{n(t)} |}^2 \<br>                             &amp; \le {|\mathbf{w}_{t}|}^2 + \max_n{| y_n\mathbf{x}<em>n |}^2 \<br>                             &amp; \le {|\mathbf{w}</em>{t}|}^2 + \max_n{|\mathbf{x}_n |}^2<br>    \end{align}<br>    $$<br>如此一来，我们便排除了第二种情况，说明了随着循环次数的增长，$\mathbf{w}_f$和$\mathbf{w}_t$的夹角不断变小。</p>
+<p>这里老师还留了一个有趣的小问题。从$\mathbf{w}_{0}=\mathbf{0}$开始，经过$T$次错误纠正，我们有：<br>    $$\frac{\mathbf{w}_f^T}{|\mathbf{w}_f|} \frac{\mathbf{w}_T}{|\mathbf{w}_T|} \ge \sqrt{T}\cdot{constant}$$<br>问这个$constant$应该是多少。<br>这个问题不算太难，通过上面的两个不等式，经过推导，我们可以得到：<br>    
+    $$constant = \frac {\min_n y_{n}\mathbf{w}_f^T\mathbf{x}_n} {{\|\mathbf{w}_{f}\|}^2 \max_n {\|\mathbf{x}_n \|}^2}$$
+    }
+    </p>
+<h2 id="Non-Seperable-Data"><a href="#Non-Seperable-Data" class="headerlink" title="Non-Seperable Data"></a>Non-Seperable Data</h2><p>上面我们证明了，只要我们的数据是<strong>线性可分</strong>，且每次都<strong>修正一个错误</strong>：</p>
+<ul>
+<li>$\mathbf{w}_f$和$\mathbf{w}_t$<strong>的内积快速变大</strong>，而且<strong>$\mathbf{w}_t$</strong>的长度增长的不快</li>
+<li>也就是说：PLA这条线越来越接近$\mathbf{w}_f$直到停止</li>
+</ul>
+<p>这样的好处是：<strong>实现很简单，对任何纬度$d$都work。</strong><br>坏处是：</p>
+<ul>
+<li><strong>不知道会不会停下来</strong>（因为不知道$\mathbf{w}_f$）。</li>
+<li><strong>就算知道会停下来，也不知道多久会停下来</strong>（因为计算$\rho$需要用到$\mathbf{w}_f）。</li>
+</ul>
+<p>那如果我们的数据集不是线性可分的话，我们怎么办呢？也就是用<strong>噪声数据</strong>进行学习：<br><img src="http://oky5aqxds.bkt.clouddn.com/2-5.png" alt="图2-5"></p>
+<p>假设噪声是<strong>“小”</strong>的，即大部分情况下$y_n = f(\mathbf{x}_n)$。<br>如果这样的话，那么我们也希望我们求得的$g$在大部分情况下有$y_n = g(\mathbf{x}_n)$。<br>于是，我们可以这样来求$\mathbf{w}_g$：<br>    $$\mathbf{w}<em>g \leftarrow \mathop{\arg\min}</em>{\mathbf{w}} \sum_{n=1}^{N}(y_n \neq sign(\mathbf{w}^T\mathbf{x}_n))$$<br>但是很不幸，这个问题被证明是NP-hard的。</p>
+<p>那么既然不好找到精确解，我们能不能通过修改PLA来近似地找到一个还能接受的g呢？</p>
+<p><strong>Pocket Algorithm</strong></p>
+<blockquote>
+<p>把最好的那条线抓在手上。</p>
+</blockquote>
+<ol>
+<li>初始化Pocket权重为$\hat{\mathbf{w}}$</li>
+<li>对$t = 0, 1, \cdots$<ol>
+<li>（随机）找到$\mathbf{w}<em>t$所犯的一个错误$(\mathbf(x)</em>{n(t)}, y_{n(t)})$</li>
+<li>（尝试）通过以下方法修复错误：<br> $$ \mathbf{w}<em>{t+1} \leftarrow \mathbf{w}</em>{t} + y<em>{n(t)}\mathbf{x}</em>{n(t)} $$</li>
+<li>如果$\mathbf{w}_{t+1}$比$\hat{\mathbf{w}}$犯的错误还要少，那么我们用前者来替换后者。</li>
+</ol>
+</li>
+</ol>
+<p>直到经过了<strong>足够多次循环</strong>。<br>返回$\hat{\mathbf{w}}$（我们称为$\mathbf{w}_{POCKET}$）为我们所求的$g$。</p>
+<p>已有理论能够证明，如果数据集线性可分，那么PLA可以做得很好；如果不线性可分，那么Pocket Algorithm将会做得还不错。</p>
+<h2 id="Summary"><a href="#Summary" class="headerlink" title="Summary"></a>Summary</h2><p><img src="http://oky5aqxds.bkt.clouddn.com/2-6.png" alt="图2-6"></p>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[机器学习基石第一讲：The Learning Problem 笔记]]></title>
       <url>http://gtbai.github.io/2017/02/06/mlfound_1/</url>
       <content type="html"><![CDATA[<p>此系列博客将记录我在学习<a href="http://www.csie.ntu.edu.tw/~htlin/mooc/" target="_blank" rel="external">《机器学习基石》</a>课程时的学习笔记。<a href="http://www.csie.ntu.edu.tw/~htlin/mooc/" target="_blank" rel="external">《机器学习基石》</a>课程由国立台湾大学林轩田老师在Cousera网站上开设，试图从概率论的角度介绍机器学习。我曾在16年夏季学期在Cousera网站上跟过此课程。当时因为懒惰，没有记录笔记。如今半年过去，课程内容已被我忘记大半。如今从头开始，认真整理笔记。目的是帮助我自己更好地理解和记忆课程知识，同时也希望能给学习本课程的同学提供一些帮助。</p>
-<h2 id="Course-Introduction"><a href="#Course-Introduction" class="headerlink" title="Course Introduction"></a>Course Introduction</h2><p>课程将会像讲故事一样，阐述四个问题：</p>
+<h1 id="第一讲：The-Learning-Problem"><a href="#第一讲：The-Learning-Problem" class="headerlink" title="第一讲：The Learning Problem"></a>第一讲：The Learning Problem</h1><h2 id="Course-Introduction"><a href="#Course-Introduction" class="headerlink" title="Course Introduction"></a>Course Introduction</h2><p>课程将会像讲故事一样，阐述四个问题：</p>
 <ul>
 <li><strong>When</strong> Can Machines Learn? (illustrative + technique) </li>
 <li><strong>Why</strong> Can Machines Learn? (theoretical + illustrative)</li>

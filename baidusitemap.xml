@@ -4,8 +4,28 @@
 
     
   <url>
+    <loc>http://gtbai.github.io/2017/02/09/mlfound-2/</loc>
+    <lastmod>2017-02-10T16:48:02.000Z</lastmod>
+    <data>
+        <display>
+        <title>机器学习基石第二讲：Learning to Answer Yes/No 笔记</title>
+        <pubTime>2017-02-09T08:29:30.000Z</pubTime>
+        
+        <tag>机器学习基石</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://gtbai.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://gtbai.github.io/2017/02/06/mlfound_1/</loc>
-    <lastmod>2017-02-07T16:20:25.000Z</lastmod>
+    <lastmod>2017-02-09T08:31:40.000Z</lastmod>
     <data>
         <display>
         <title>机器学习基石第一讲：The Learning Problem 笔记</title>
