@@ -85,7 +85,6 @@
     \]</span> 如此一来，我们便排除了第二种情况，说明了随着循环次数的增长，<span class="math inline">\(\mathbf{w}_f\)</span>和<span class="math inline">\(\mathbf{w}_t\)</span>的夹角不断变小。</p>
 <p>这里老师还留了一个有趣的小问题。从<span class="math inline">\(\mathbf{w}_{0}=\mathbf{0}\)</span>开始，经过<span class="math inline">\(T\)</span>次错误纠正，我们有： <span class="math display">\[\frac{\mathbf{w}_f^T}{\|\mathbf{w}_f\|} \frac{\mathbf{w}_T}{\|\mathbf{w}_T\|} \ge \sqrt{T}\cdot{constant}\]</span> 问这个<span class="math inline">\(constant\)</span>应该是多少。 这个问题不算太难，通过上面的两个不等式，经过推导，我们可以得到： 
     $$constant = \frac {\min_n y_{n}\mathbf{w}_f^T\mathbf{x}_n} {{\|\mathbf{w}_{f}\|}^2 \max_n {\|\mathbf{x}_n \|}^2}$$
-    }
     </p>
 <h2 id="non-seperable-data">Non-Seperable Data</h2>
 <p>上面我们证明了，只要我们的数据是<strong>线性可分</strong>，且每次都<strong>修正一个错误</strong>：</p>
