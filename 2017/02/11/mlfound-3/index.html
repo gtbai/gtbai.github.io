@@ -1,0 +1,184 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="白广通的博客"><title>机器学习基石第三讲：Types of Learning 笔记 | Bruce's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/5.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">机器学习基石第三讲：Types of Learning 笔记</h1><a id="logo" href="/.">Bruce's Blog</a><p class="description">Stay hungry, stay foolish.</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/history/"><i class="fa fa-book"> 历史</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">机器学习基石第三讲：Types of Learning 笔记</h1><div class="post-meta">Feb 11, 2017<span> | </span><span class="category"><a href="/categories/机器学习/">机器学习</a></span><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><a data-disqus-identifier="2017/02/11/mlfound-3/" href="/2017/02/11/mlfound-3/#disqus_thread" class="disqus-comment-count"></a><div class="clear"><div id="toc" class="toc-article"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#learning-with-different-output"><span class="toc-number">1.</span> <span class="toc-text">Learning with Different Output</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#learning-with-different-data-label"><span class="toc-number">2.</span> <span class="toc-text">Learning with Different Data Label</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#learning-with-different-protocol"><span class="toc-number">3.</span> <span class="toc-text">Learning with Different Protocol</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#learning-with-different-input-space"><span class="toc-number">4.</span> <span class="toc-text">Learning with Different Input Space</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#summary"><span class="toc-number">5.</span> <span class="toc-text">Summary</span></a></li></ol></div></div><div class="post-content"><p>今天我们从上次的Yes/No题出发，探讨一下机器学习中还有哪些不同的问题，它们与我们的Yes/No题又有哪些不一样，以及不一样在什么地方。</p>
+<a id="more"></a>
+<h2 id="learning-with-different-output">Learning with Different Output</h2>
+<p>回顾一下上次的Yes/No问题： <img src="http://oky5aqxds.bkt.clouddn.com/3-1.png" alt="图3-1"></p>
+<p>Yes/No题的应用非常的广泛：</p>
+<ul>
+<li>信用卡批准/不批准</li>
+<li>邮件是垃圾邮件/不是垃圾邮件</li>
+<li>病人生病了/没有生病</li>
+<li>广告会盈利/不会盈利</li>
+<li>学生对某道习题的回答正确/不正确（KDD Cup 2010）</li>
+</ul>
+<p>多元分类问题（以硬币分类为例子）： <img src="http://oky5aqxds.bkt.clouddn.com/3-2.png" alt="图3-2"></p>
+<p>其他的多元分类问题：</p>
+<ul>
+<li>手写数字识别 <span class="math inline">\(\Rightarrow\)</span> 0, 1, 2, …, 9</li>
+<li>图片识别 <span class="math inline">\(\Rightarrow\)</span> 水果，橘子，草莓</li>
+<li>邮件分类 <span class="math inline">\(\Rightarrow\)</span> 垃圾邮件，重要邮件，社交邮件，促销邮件，更新邮件等</li>
+</ul>
+<p>其中一个应用非常多的领域就是recognition，即视觉/听觉的辨识。</p>
+<p>在医院的情境下，二元分类可以告诉我们病人有没有生病，而多元分类可以告诉我们病人生的是哪一种病。而如果我们想要知道：病人多久后会康复。也就是说问题的输出是整个实数域，或者一个有界的区间，即： <span class="math display">\[ Y = R \quad or \quad Y = [lower, upper] \subset R \]</span></p>
+<p>这样的问题就是<strong>回归</strong>问题。</p>
+<p>其他的一些回归问题包括：</p>
+<ul>
+<li>根据公司数据预测股票价格</li>
+<li>根据气候数据预测温度</li>
+</ul>
+<p>回归问题同分类问题一样，是机器学习中很重要、很基础的问题，可以用来做为其他问题的基础。</p>
+<p>接下来有一个复杂的问题：自然语言中的词性标注问题。 <img src="http://oky5aqxds.bkt.clouddn.com/3-3.png" alt="图3-3"></p>
+<p>这种问题被称为<strong>结构化学习问题</strong>，类似的问题还有：</p>
+<ul>
+<li>输入蛋白质的数据 <span class="math inline">\(\Rightarrow\)</span> 输出蛋白质的3D模型</li>
+<li>输入一段话 <span class="math inline">\(\Rightarrow\)</span> 输出每一个字在这段话的关系是什么（Speech Parse Tree）</li>
+</ul>
+<p>简单总结：</p>
+<ul>
+<li><strong>二元分类</strong>：<span class="math inline">\(Y = {-1, +1}\)</span></li>
+<li>多元分类：<span class="math inline">\(Y = {1,2, \cdots, K}\)</span></li>
+<li><strong>回归</strong>：<span class="math inline">\(Y = R\)</span></li>
+<li>结构化学习：<span class="math inline">\(Y = \{structures\}\)</span></li>
+<li>其他</li>
+</ul>
+<h2 id="learning-with-different-data-label">Learning with Different Data Label</h2>
+<p>我们现在从硬币分类问题出发：</p>
+<p>如果我们输入每一个硬币的大小和重量，以及每一个硬币的价值，让机器训练出一个分类器，那么这就是一个<strong>监督式学习(Supervised Learning)</strong>问题： <img src="http://oky5aqxds.bkt.clouddn.com/3-5.png" alt="图3-5"></p>
+<p>那如果我们不告诉机器每一个硬币的价值，让机器自己去分类，那么这是将是一个<strong>非监督式学习(Unsupervised Learning)</strong>，称为<strong>聚类问题（Clustering Problem）</strong>。这将是一个比分类更困难的问题，比如如何衡量聚类效果的好坏就很难。</p>
+<p>典型的聚类问题有：</p>
+<ul>
+<li>把文章自动归到不同的分类</li>
+<li>根据顾客的档案把他们分到不同的群</li>
+</ul>
+<p>非监督式学习的典型问题有：</p>
+<ul>
+<li><strong>聚类</strong>：<span class="math inline">\(\mathbf{x}_n \Rightarrow cluster(\mathbf{x})\)</span> (约等于Unsupervised Multiclass Classification）
+<ul>
+<li>把文章自动归到不同的分类</li>
+</ul></li>
+<li><strong>密度估计</strong>：<span class="math inline">\(\mathbf{x}_n \Rightarrow density(\mathbf{x})\)</span> (约等于Unsupervised Bounded Regression)
+<ul>
+<li>根据交通事故报告推测有经常发生事故的区域</li>
+</ul></li>
+<li><strong>异常检测</strong>：<span class="math inline">\(\mathbf{x}_n \Rightarrow unusual(\mathbf{x})\)</span> （约等于Unsupervised Binary Claasfication）
+<ul>
+<li>根据互联网的日志信息给出被入侵或者不正常运作警报</li>
+<li>因为异常情况很少，取得labeled data也很难</li>
+</ul></li>
+<li>其他</li>
+</ul>
+<p><strong>半监督式学习</strong>（Semi-supervised）指在我们的输入数据集里，少部分数据有标签，大部分数据无标签。典型问题有：</p>
+<ul>
+<li>输入少量被标记的人脸图片 <span class="math inline">\(\Rightarrow\)</span> 人脸识别器（Facebook）</li>
+<li>少量药效被测试过的药数据 <span class="math inline">\(\Rightarrow\)</span> 药效果预测器</li>
+</ul>
+<p>半监督式学习问题的一个共同特点是<strong>取得标签都很贵</strong>，于是想到用大量未标记数据来避免昂贵的标记工作。</p>
+<p><strong>增强学习</strong>是一种“完全不同”但是自然的学习方式。</p>
+<p>想一想你怎么训练你的宠物？</p>
+<p>例如你叫你的狗坐下，狗却在地上尿尿：</p>
+<ul>
+<li>你不能直接告诉你的狗当<span class="math inline">\(\mathbf{x}_n = &#39;sit down&#39;\)</span>时，<span class="math inline">\(y_n = sit\)</span></li>
+<li>但是你可以在它做错时惩罚它；</li>
+<li>或者在它做对时奖励它，比如给它饼干吃。</li>
+<li>当然也不一定是准确做到坐下时，才奖励它。比如它做了一个相似的动作像握手，你也还是会给它饼干吃，只不过可能不会给它吃它最爱吃的那种。</li>
+</ul>
+<p>这种通过在输出上施加奖惩的策略来进行学习的方式，叫做增强学习。其他的一些例子有：</p>
+<ul>
+<li>输入（顾客信息，系统的广告选择，广告点击带来的盈利）<span class="math inline">\(\Rightarrow\)</span> 通过学习进步了的广告投放系统</li>
+<li>输入（手上的牌，系统的出牌策略，系统赢得的钱）<span class="math inline">\(\Rightarrow\)</span> 通过学习进步了的出牌系统</li>
+</ul>
+<p>增强学习中，我们并不会告诉机器对于某个输入准确的输出是什么，只会告诉它某个输出好还是不好，由机器按照这些信息进行学习。这些信息通常是序列化到达，而不是一起到达的。</p>
+<p>简单总结：</p>
+<ul>
+<li><strong>监督式学习</strong>：所有<span class="math inline">\(x_n\)</span>都有<span class="math inline">\(y_n\)</span></li>
+<li>非监督式学习：所有<span class="math inline">\(x_n\)</span>都没有<span class="math inline">\(y_n\)</span></li>
+<li>半监督式学习：少部分<span class="math inline">\(x_n\)</span>有<span class="math inline">\(y_n\)</span></li>
+<li>增强式学习：<span class="math inline">\(y_n\)</span>好还是不好（<span class="math inline">\(\tilde{y_n}\)</span>）</li>
+</ul>
+<h2 id="learning-with-different-protocol">Learning with Different Protocol</h2>
+<p><strong>Batch Learning</strong>: 一次从所有已知数据中学习，是一种很常见的学习方式：</p>
+<ul>
+<li>输入一批（邮件，是否垃圾）的数据 <span class="math inline">\(\Rightarrow\)</span> 垃圾邮件过滤器</li>
+<li>输入一批（病人，癌症种类）的数据 <span class="math inline">\(\Rightarrow\)</span> 癌症分类器</li>
+<li>输入一批病人数据 <span class="math inline">\(\Rightarrow\)</span> 病人分组（聚类问题）</li>
+</ul>
+<p>这都是Batch Learning的学习方式。</p>
+<p>与之相对的是<strong>线上学习（Online Learning）</strong>的方式：</p>
+<ul>
+<li>收到一封邮件</li>
+<li>用已有的<span class="math inline">\(g_t\)</span>对它是否是垃圾邮件进行预测</li>
+<li>用户告诉它正确的Label <span class="math inline">\(y_t\)</span>，系统根据<span class="math inline">\((\mathbf{x}_t, y_t)\)</span>更新<span class="math inline">\(g_t\)</span></li>
+</ul>
+<p>线上学习与我们之前学过问题有很多联系，例如：</p>
+<ul>
+<li>PLA问题可以很方便地采用线上学习方式</li>
+<li>通常增强学习也是以线上学习的方式完成的</li>
+</ul>
+<p>通过线上学习，我们希望每一轮计算出的<span class="math inline">\(g\)</span>越变越好。</p>
+<p>Batch Learning比较像填鸭式教育，线上学习比较像老师在教书。在这两个方式中，机器都是被动的。在最近的机器学习研究中，有一个热门的研究方向就是：我们能不能让机器自己问问题。比如在手写数字识别中，机器可以自己生成一个数字，或者拿一个它无法判断的数字，来问人这究竟是几。</p>
+<p>这样的学习方式叫做<strong>主动学习(Active Learning)</strong>，希望通过让机器有策略地选择一些问题来问，从而用很少的标记来改善学习效果。通常也是用在数据很多或标记很贵的情境中。</p>
+<p>简单总结：</p>
+<ul>
+<li><strong>batch learning</strong>: 一次性喂给机器所有已知数据</li>
+<li>online learning: 序列性喂给机器数据</li>
+<li>active learning: 向专家有策略地提问获得观察到的数据</li>
+</ul>
+<h2 id="learning-with-different-input-space">Learning with Different Input Space</h2>
+<p>之前我们讲的都跟输出有关：输出的空间不同如何分类，取得标记的方法不同如何分类等等。现在我们来谈一谈输入。</p>
+<p>还是之前的信用卡批准问题。我们其实假设我们的输入（用户资料）非常具体（concret），而且跟我们想要做的事有一定关系。更具体地说，它们可能都代表一些蛮复杂、经过处理的特征，这些特征和我们想要的输出有一些关系。</p>
+<p>Concert代表，我们可能可以进行简单的运算就能得到一个能直接决定结果的变量（个人理解）。例如：</p>
+<ul>
+<li>硬币分类问题中，硬币的大小和重量</li>
+<li>信用卡批准问题中，用户的具体信息</li>
+<li>癌症诊断问题中，病人的具体信息</li>
+</ul>
+<p>在这些特征里面，带有人类的智慧对问题的描述（Domain Knowledge），人类的智慧已经用在像预处理的工作中，这类问题在机器学习中是比较简单的。</p>
+<p>如果我们要做手写数字的识别，我们：</p>
+<ul>
+<li>可以输入数字是否对称，和数字的密度。（concret特征）： <img src="http://oky5aqxds.bkt.clouddn.com/3-8.png" alt="图3-8"></li>
+<li>同时也可以直接输入16 x 16灰阶图像（raw特征）：每个点只有很简单的物理意义，更<strong>抽象</strong>一些： <img src="http://oky5aqxds.bkt.clouddn.com/3-9.png" alt="图3-9"></li>
+</ul>
+<p>很多情况下，需要人们把raw features转化成concrete features，这门学问叫做feature engineering。而深度学习(deep learning)，概略的来说，就是利用大量的数据，甚至使用非监督式的学习，来抽取具体的特征。</p>
+<p>这些还不是最困难的，最困难的是非常非常抽象： 比如在KDD Cup 2011上的预测用户给歌曲打分问题：</p>
+<ul>
+<li>输入（userid, itemid, rating），预测某userid给某itemid的rating</li>
+<li>典型的回归问题：<span class="math inline">\(Y \subseteq R, X \subseteq N x N\)</span></li>
+<li>这个二维向量是没有实际意义的，因此对机器学习而言是一个很难的问题。</li>
+<li>因此我们要为用户和歌曲抽取特征，这些特征可能一部分是人想的，另一部分是机器自己学到的。</li>
+</ul>
+<p>其他在KDD Cup里类似的问题：</p>
+<ul>
+<li>在线辅导系统里学生的编号(KDD Cup 2010)</li>
+<li>在线广告投放系统中广告的编号</li>
+</ul>
+<p>这里的abstract feature比raw feature更抽象一层，难度更高一些，需要更多的抽取动作。</p>
+<p>简单总结：</p>
+<ul>
+<li><strong>concret features</strong>: 有复杂的现实意义</li>
+<li>raw features: 有简单的现实意义</li>
+<li>abstract features: 没有（或很少）现实意义</li>
+<li>其他</li>
+</ul>
+<h2 id="summary">Summary</h2>
+<div class="figure">
+<img src="http://oky5aqxds.bkt.clouddn.com/3-11.png" alt="图3-11">
+<p class="caption">图3-11</p>
+</div>
+<p>下节课，我们将会讨论一个问题：<strong>机器学习可能是做不到的</strong>。</p>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://gtbai.github.io/2017/02/11/mlfound-3/" data-id="ciz2h3l3s0007u18fyktw56p4" class="article-share-link">分享到</a><div class="tags"><a href="/tags/机器学习基石/">机器学习基石</a></div><div class="post-nav"><a href="/2017/02/09/mlfound-2/" class="next">机器学习基石第二讲：Learning to Answer Yes/No 笔记</a></div><div id="disqus_thread"><script>var disqus_shortname = 'gtbai';
+var disqus_identifier = '2017/02/11/mlfound-3/';
+var disqus_title = '机器学习基石第三讲：Types of Learning 笔记';
+var disqus_url = 'http://gtbai.github.io/2017/02/11/mlfound-3/';
+(function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//gtbai.disqus.com/count.js" async></script></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">3</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/机器学习基石/" style="font-size: 15px;">机器学习基石</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/11/mlfound-3/">机器学习基石第三讲：Types of Learning 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/09/mlfound-2/">机器学习基石第二讲：Learning to Answer Yes/No 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/06/mlfound-1/">机器学习基石第一讲：The Learning Problem 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/05/hello-world/">Hello World</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> 最近评论</i></div><script type="text/javascript" src="//gtbai.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">© <a href="/." rel="nofollow">Bruce's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a><br/><span id="busuanzi_container_site_pv"><i class="fa fa-mouse-pointer"></i><span> </span><span rel="nofollow" id="busuanzi_value_site_pv"></span></span><span> | </span><span id="busuanzi_container_site_uv"><i class="fa fa-user-circle-o"></i><span> </span><span rel="nofollow" id="busuanzi_value_site_uv"></span></span></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="/css/jquery.fancybox.css?v=0.0.0"><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script></div></body></html>
