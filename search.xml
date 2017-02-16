@@ -4,6 +4,125 @@
   
     
     <entry>
+      <title><![CDATA[机器学习基石第四讲：Learning is Impossible 笔记]]></title>
+      <url>http://gtbai.github.io/2017/02/14/mlfound-4/</url>
+      <content type="html"><![CDATA[<p>今天要探讨的问题是Feasibility of Learning，即Learning是不是可行的。我们上次埋了一个梗，说Learning搞不好是做不到的。我们先讨论这个问题，再研究即使Learning是做不到的，我们能否加上一些假设或者使用一些方法，使Learning是做得到的。</p>
+<a id="more"></a>
+<h2 id="learning-is-impossible">Learning is Impossible?</h2>
+<p>老师首先展示了一个有趣的Human Learning的小例子： <img src="http://oky5aqxds.bkt.clouddn.com/4-1.png" alt="图4-1"></p>
+<p>这里老师是想通过例子告诉大家，如果机器学习问题没有限制的话，那么无论你学到什么东西，你的“敌人”永远可以说你是没有学到东西。这样看起来，学习是一件不可能的任务。</p>
+<p>这里还有一个简单的二元分类的问题： <img src="http://oky5aqxds.bkt.clouddn.com/4-2.png" alt="图4-2"></p>
+<p>那就算我们找到的<span class="math inline">\(g\)</span>在<span class="math inline">\(D\)</span>中提供的5组3-bit<span class="math inline">\((x, y)\)</span>上和<span class="math inline">\(f\)</span>上完全相同，在<span class="math inline">\(D\)</span>以外，我们却仍相当于没有学到任何东西： <img src="http://oky5aqxds.bkt.clouddn.com/4-3.png" alt="图4-3"></p>
+<p>也就是说，如果任何“未知”的<span class="math inline">\(f\)</span>都有可能发生的话，从已知资料<span class="math inline">\(D\)</span>中进行学习将注定失败。</p>
+<h2 id="probability-to-the-rescue">Probability to the rescue</h2>
+<p>刚才我们说到，在非常严格的环境下，learning是做不到的。但是我们可以想一些办法，用一些工具，去对未知的东西做一些推论。</p>
+<p>想象我们有一个大大的罐子，其中有很多橘色的弹珠和绿色的弹珠。如果我们想要知道罐子中橘色弹珠占的比例。如果我们没有办法一颗一颗拿出来数，我们可以怎么做呢？或者说，我们怎么来<strong>估计</strong>一下橘色弹珠的比例呢？</p>
+<p>当然有办法，我们可以使用抽样的方法： <img src="http://oky5aqxds.bkt.clouddn.com/4-4.png" alt="图4-4"></p>
+<p>那in-sample的比例<span class="math inline">\(\nu\)</span>会不会告诉我们一些关于out-sample的比例<span class="math inline">\(\mu\)</span>的信息呢？</p>
+<ul>
+<li>不会
+<ul>
+<li>因为即使罐子里大部分是橘色弹珠，你也有可能拿到一把绿色弹珠。（虽然几率很小，但有可能发生）</li>
+</ul></li>
+<li>会
+<ul>
+<li>因为有很大可能in-sample <span class="math inline">\(\nu\)</span> 会和未知的<span class="math inline">\(\mu\)</span>相近。</li>
+</ul></li>
+</ul>
+<p>那么在数学上，我们怎么正式地表达这件事呢？</p>
+<p>在一个很大的样本里，大致上来说<span class="math inline">\(\nu\)</span>和<span class="math inline">\(\mu\)</span>很接近： <span class="math display">\[ P[|\nu - \mu| &gt; \epsilon] \le 2exp(-2\epsilon^2N)\]</span></p>
+<p>这被称为<strong>Hoeffding不等式</strong>，用在弹珠比例估计，丢硬币的正反面出现概率估计，利用民意调查估计民意等。通俗点说，<span class="math inline">\(\nu = \mu\)</span>”大概、差不多“是对的（Probably Approximately Correct, PAC）。”大概“表示概率大，”差不多“表示值相差不大。</p>
+<p>Hoeffding不等式：</p>
+<ul>
+<li>对所有<span class="math inline">\(N\)</span>和<span class="math inline">\(\epsilon\)</span>成立</li>
+<li>不需要知道<span class="math inline">\(\mu\)</span>，也没有任何关于<span class="math inline">\(\mu\)</span>的假设</li>
+<li><span class="math inline">\(N\)</span>越大，<span class="math inline">\(\epsilon\)</span>越大，<span class="math inline">\(\nu \approx \mu\)</span>的几率越大</li>
+</ul>
+<p>也就是说，当<span class="math inline">\(N\)</span>够大的话，我们是可以从已知的<span class="math inline">\(\nu\)</span>推论未知的<span class="math inline">\(\mu\)</span>的。</p>
+<h2 id="connection-to-learning">Connection to Learning</h2>
+<p>那我们前面说的这些，和learning有什么关系呢？下面是bin model和machine learning中元素的一一对应： <img src="http://oky5aqxds.bkt.clouddn.com/4-5.png" alt="图4-5"></p>
+<p>这样，我们就得到了这么一个推论：当<span class="math inline">\(N\)</span>够大而且<span class="math inline">\(\mathbf{x}_n\)</span>是从<span class="math inline">\(X\)</span>中i.i.d.地抽出时，我们可以大概地通过已知<span class="math inline">\(D\)</span>上<span class="math inline">\([h(\mathbf{x}_n) \ne f(\mathbf{x}_n)]\)</span>的比例推断出未知的整个<span class="math inline">\(X\)</span>上<span class="math inline">\([h(\mathbf{x}) \ne f(\mathbf{x})]\)</span>的概率。</p>
+<p>这幅图展示了在机器学习的流程中一些附加的要素： <img src="http://oky5aqxds.bkt.clouddn.com/4-6.png" alt="图4-6"></p>
+<p>其中的概率分布<span class="math inline">\(P\)</span>决定了我们的数据集<span class="math inline">\(D\)</span>中的<span class="math inline">\(\mathbf{x}_n\)</span>是如何从<span class="math inline">\(X\)</span>中产生的，就像决定了我们在从罐子里抓弹珠时，抓的是哪一把弹珠。我们并不需要知道它。</p>
+<p>根据上图，对任意一个固定的<span class="math inline">\(h\)</span>，我们可以大概地推测：</p>
+<ul>
+<li>未知的 <span class="math inline">\(E_{out}(h) = \varepsilon_{\mathbf{x} \sim P} [h(\mathbf{x}) \ne f(\mathbf{x})]\)</span></li>
+<li>通过已知的 <span class="math inline">\(E_{in}(h) = \frac{1}{N} \sum_{n=1}^{N} \|h(\mathbf{x}_n) \ne y_n \|\)</span></li>
+</ul>
+<p>其中out是指out-sample，是指在未知的数据点；in是指in-sample，是指在已知的数据集中。</p>
+<p>把Hoeffding定理代过来，我们有：对任意固定的<span class="math inline">\(h\)</span>，在“大量”数据中，我们有：in-sample的误差<span class="math inline">\(E_{in}(h)\)</span>大概和out-sample的误差<span class="math inline">\(E_{out}(h)\)</span>接近（误差在<span class="math inline">\(\epsilon\)</span>以内）： <span class="math display">\[ P[|E_{in}(h) - E_{out}(h)| &gt; \epsilon] \le 2exp(-2\epsilon^2N)\]</span></p>
+<p>和“罐子”比喻相同，这里也有：</p>
+<ul>
+<li>对所有<span class="math inline">\(N\)</span>和<span class="math inline">\(\epsilon\)</span>成立</li>
+<li>不需要知道<span class="math inline">\(E_{out}(h)\)</span>，也没有任何关于<span class="math inline">\(E_{out}(h)\)</span>的假设
+<ul>
+<li>不需要知道<span class="math inline">\(f\)</span>和<span class="math inline">\(P\)</span></li>
+</ul></li>
+<li>“$ E_{in}(h) = E_{out}(h) $”是“大概、差不多”正确（PAC）</li>
+</ul>
+<p>也就是说，如果”$ E_{in}(h) E_{out}(h) <span class="math inline">\(“而且”\)</span>E_{in}(h)<span class="math inline">\(比较小“，那么可以推出\)</span>E_{out}(h)也比较小<span class="math inline">\(。也就是在同一个\)</span>P<span class="math inline">\(产生的数据点上，\)</span>h f$。</p>
+<p>那么对于任意固定的<span class="math inline">\(h\)</span>，当数据够多的时候： <span class="math display">\[ E_{in}(h) \approx E_{out}(h) \]</span> 我们可以说我们学到了好的结果吗？</p>
+<ul>
+<li>一个回答是可以
+<ul>
+<li>当<span class="math inline">\(E_{in}(h)\)</span>对一个固定的<span class="math inline">\(h\)</span>很小的时候，而且算法<span class="math inline">\(A\)</span>恰好选择了<span class="math inline">\(h\)</span>作为输出<span class="math inline">\(g\)</span>，那么”$ g = f$“ PAC。</li>
+</ul></li>
+<li>另一个回答是不可以
+<ul>
+<li>因为我们的定理只是针对某一个固定的<span class="math inline">\(h\)</span>有bound，对不同的<span class="math inline">\(h\)</span>之间并没有约束。所以这就造成了对不同的数据集，算法<span class="math inline">\(A\)</span>总是会选择<span class="math inline">\(h\)</span>作为<span class="math inline">\(g\)</span>，然而：
+<ul>
+<li><span class="math inline">\(E_{in}(h)\)</span>几乎总是不小的</li>
+<li>恰恰使得”$ g f$“ PAC。</li>
+</ul></li>
+</ul></li>
+</ul>
+<p>因此，真正的学习是：<span class="math inline">\(A\)</span>应该能够自己从<span class="math inline">\(H\)</span>中做选择，而不是被强迫去选哪一个<span class="math inline">\(h\)</span>。</p>
+<p>因此，我们现在做到的不能说是learning，只能说是verification： <img src="http://oky5aqxds.bkt.clouddn.com/4-7.png" alt="图4-7"></p>
+<p>也就是说，我们现在只能够做到验证某个<span class="math inline">\(h\)</span>的好坏，但还不能做到从<span class="math inline">\(H\)</span>中选出最好的那个<span class="math inline">\(h\)</span>出来。</p>
+<h2 id="connection-to-real-learning">Connection to Real Learning</h2>
+<p>前面我们说到一个<span class="math inline">\(h\)</span>时我们可以做verification，那多个hypothesis时我们怎么办呢？</p>
+<p>如果每一个hypothesis我们让它对应一个罐子，假设其中一个罐子中抽出来的弹珠全是绿色的，也就是说其中一个hypothesis在我们的<span class="math inline">\(D\)</span>上全对，那么我们要不要选它呢？</p>
+<p>假设在台大ML课上，150个同学每个同学都丢5次硬币，其中一位同学的硬币<span class="math inline">\(g\)</span>出现了连续5次正面。那么这就说明这位同学的<span class="math inline">\(g\)</span>真的比其他同学的好吗？</p>
+<p>从概率论的角度解释，显然不是：至少有一个硬币出现连续5次正面的概率为<span class="math inline">\(1 - (\frac{31}{32})^{150} &gt; 0.99\)</span>。</p>
+<p>这件事告诉我们：在我们<em>做选择</em>时，”bad sample“的影响可能会恶化。所谓bad sample，就是Hoeffding定理中的例外情况，即<span class="math inline">\(E_{in}\)</span>和<span class="math inline">\(E_{out}\)</span>差的比较多的情况。比如在丢一个硬币时，你以为它比别的硬币好的概率是<span class="math inline">\(\frac{1}{32}\)</span>，但是有150颗硬币时，你找到一颗你认为比别的更好的硬币的概率却大于0.99。</p>
+<p>从不好的硬币，我们来看不好的数据：</p>
+<ul>
+<li>不好的硬币：<span class="math inline">\(E_{out} = \frac{1}{2}, E_{in} = 0\)</span></li>
+<li>不好的数据：<span class="math inline">\(E_{out}\)</span>和<span class="math inline">\(E_{in}\)</span>差的很远：
+<ul>
+<li>例如<span class="math inline">\(E_{out}\)</span>很大，而<span class="math inline">\(E_{in}\)</span>却很小（在很多例子中成立）， 例如： <img src="http://oky5aqxds.bkt.clouddn.com/4-8.png" alt="图4-8"> 其中的<span class="math inline">\(D_{n}\)</span>表示第<span class="math inline">\(n\)</span>把抽出来的数据。</li>
+</ul></li>
+</ul>
+<p>那如果有很多的<span class="math inline">\(h\)</span>，所谓的不好的数据是怎么样呢？其实就是，它阻碍了算法<span class="math inline">\(A\)</span>“自由”地做选择。而好的数据，则是可以让算法<span class="math inline">\(A\)</span>自由地做选择，选什么都是对的。通俗一点讲，不好的数据是有可能让<span class="math inline">\(A\)</span>踩到雷。而”有雷“，就是指至少存在一个<span class="math inline">\(h\)</span>使得<span class="math inline">\(E_{out}(h)\)</span>和<span class="math inline">\(E_{in}(h)\)</span>差的很远： <img src="http://oky5aqxds.bkt.clouddn.com/4-9.png" alt="图4-9"></p>
+<p>因此，我们想在有<span class="math inline">\(M\)</span>个hypothesis的情况下，为<span class="math inline">\(P_{D}[BAD \, D]\)</span>找出一个bound。</p>
+<p><span class="math display">\[
+\begin{align}
+    &amp; P_{D}[BAD\,D] \\
+ = &amp; P_{D}[BAD \, D \, for \, h_1 \, or \, BAD \, D \, for \, h_2 \, or \, \cdots \, or \, BAD \, D \, for \, h_M] \\  
+ \le &amp; P_{D}[BAD \, D \, for \, h_1] + P_{D}[BAD \, D \, for \, h_2] + \cdots + P_{D}[BAD \, D \, for \, h_M] (union \, bound) \\
+ \le &amp; 2exp(-2\epsilon^2N) + 2exp(-2\epsilon^2N) + \cdots + 2exp(-2\epsilon^2N) \\
+ = &amp; 2Mexp(-2\epsilon^2N)   
+\end{align}
+\]</span></p>
+<p>如同bin model的Hoeffding定理一样，这里finite-bin版本的Hoeffding定理有：</p>
+<ul>
+<li>对所有的<span class="math inline">\(M, N, \epsilon\)</span>成立</li>
+<li>不依赖于任何一个<span class="math inline">\(E_{out}(h_m)\)</span>，不需要知道<span class="math inline">\(E_{out}(h_m)\)</span>，因此也就不需要知道<span class="math inline">\(f\)</span>和<span class="math inline">\(P\)</span></li>
+<li>可以说<span class="math inline">\(E_{in}(g) = E_{out}(g)\)</span> PAC，对任何一个算法<span class="math inline">\(A\)</span>都成立</li>
+</ul>
+<p>那么看起来，最合理的演算法就是选一个<span class="math inline">\(E_{in}\)</span>最小的<span class="math inline">\(g\)</span>。</p>
+<p>那么当<span class="math inline">\(|H| = M\)</span>且有限时，<span class="math inline">\(N\)</span>够大时，对<span class="math inline">\(A\)</span>挑选的任意<span class="math inline">\(g\)</span>，有<span class="math inline">\(E_{in}(g) \approx E_{out}(g)\)</span>。那么如果<span class="math inline">\(A\)</span>找到了一个<span class="math inline">\(E_{in}(g) \approx 0\)</span>， PAC可以保证<span class="math inline">\(E_{out} \approx 0\)</span>。那么更新之后的learning flow如下： <img src="http://oky5aqxds.bkt.clouddn.com/4-10.png" alt="图4-10"></p>
+<p>但是很多hypothesis set都是无限大的，例如perceptron中的无限条线。因此，现在问题还是没有完全解决。但是这里的有限的hypothesis set给了我们一个一个很好的出发点，让我们知道了learning可以做到一些事情。而无限的情况有一些困难，可能还要花费两到三节课的时间来解决这个问题。</p>
+<p>本节的测验题非常有趣，值得一看： <img src="http://oky5aqxds.bkt.clouddn.com/4-11.png" alt="图4-11"></p>
+<h2 id="summary">Summary</h2>
+<div class="figure">
+<img src="http://oky5aqxds.bkt.clouddn.com/4-12.png" alt="图4-12">
+<p class="caption">图4-12</p>
+</div>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[机器学习基石第三讲：Types of Learning 笔记]]></title>
       <url>http://gtbai.github.io/2017/02/11/mlfound-3/</url>
       <content type="html"><![CDATA[<p>今天我们从上次的Yes/No题出发，探讨一下机器学习中还有哪些不同的问题，它们与我们的Yes/No题又有哪些不一样，以及不一样在什么地方。</p>
