@@ -4,6 +4,104 @@
   
     
     <entry>
+      <title><![CDATA[机器学习基石第五讲：Training versus Testing 笔记]]></title>
+      <url>http://gtbai.github.io/2017/02/18/mlfound-5/</url>
+      <content type="html"><![CDATA[<p>我们今天的话题是，training和testing到底有什么不同。要解决的根本问题是：机器学习究竟为什么是可行的，当hypothesis set是无限大时，究竟发生了什么事情。</p>
+<a id="more"></a>
+<h2 id="recap-and-preview">Recap and Preview</h2>
+<p>从上节课中，我们知道机器学习的流程已经是这样： <img src="http://oky5aqxds.bkt.clouddn.com/5-1.png" alt="图5-1"></p>
+<p>其中<span class="math inline">\(P\)</span>表示，我们的训练数据和测试数据都是由<span class="math inline">\(P\)</span>控制产生的。</p>
+<p>光在训练数据上表现好还不够，我们希望在没有看过的资料上表现好才是我们想要的。</p>
+<p>现在我们来回顾前四节课的重点： <img src="http://oky5aqxds.bkt.clouddn.com/5-2.png" alt="图5-2"></p>
+<p>于是，我们把learning拆成了两个重要的问题：</p>
+<ul>
+<li>我们能否保证<span class="math inline">\(E_{out}(g)\)</span>和<span class="math inline">\(E_{in}(g)\)</span>是足够接近的</li>
+<li>我们能否使<span class="math inline">\(E_{in}(g)\)</span>足够小</li>
+</ul>
+<p>而且前面我们主要关注hypothesis set <span class="math inline">\(H\)</span>是有限大的情况，那么<span class="math inline">\(H\)</span>的大小<span class="math inline">\(M\)</span>在以上这两个问题中究竟扮演什么角色呢？</p>
+<p>上面的两个问题在<span class="math inline">\(M\)</span>上的trade-off如下： <img src="http://oky5aqxds.bkt.clouddn.com/5-3.png" alt="图5-3"></p>
+<p>我们能够看出，<span class="math inline">\(M\)</span>的选择对learning是非常重要的，太大或太小都不好。那么这样一来<span class="math inline">\(M = \infty\)</span>的情形不是注定效果很差吗？</p>
+<p>我们这里要想办法解决无限大的<span class="math inline">\(M\)</span>发生什么事。我们这里的思路是，用一个有限的数量<span class="math inline">\(m_{H}\)</span>来代替<span class="math inline">\(M\)</span>，这里用<span class="math inline">\(m\)</span>表示比原来的<span class="math inline">\(M\)</span>小，而下标<span class="math inline">\(H\)</span>表示是跟<span class="math inline">\(H\)</span>的性质是有一定关系的： <img src="http://oky5aqxds.bkt.clouddn.com/5-4.png" alt="图5-4"></p>
+<p>这里打一个问号，是因为我们还不知道可不可行。倘若我们能够找到这样一个<span class="math inline">\(m_{H}\)</span>的话，我们就能：</p>
+<ul>
+<li>证明当<span class="math inline">\(M\)</span>无限大时，learning是可行的</li>
+<li>利用<span class="math inline">\(m_{H}\)</span>来帮助我们选择<span class="math inline">\(H\)</span>，就像<span class="math inline">\(M\)</span>一样</li>
+</ul>
+<p>这是一个偏理论性的问题，我们要花差不多3节课的课程来证明PLA是完全合理的。</p>
+<p>这节课的测验题是： <img src="http://oky5aqxds.bkt.clouddn.com/5-5.png" alt="图5-5"></p>
+<p>这里，我们可以推导出<span class="math inline">\(N\)</span>关于其他变量的公式： <span class="math display">\[ N = \frac{1}{2\epsilon^2} ln{\frac{2M}{\delta}}\]</span></p>
+<h2 id="effective-number-of-lines">Effective Number of Lines</h2>
+<p>现在我们从finite bin model出发，讨论一下，为什么<span class="math inline">\(M = \infty\)</span>时没办法做。 <img src="http://oky5aqxds.bkt.clouddn.com/5-6.png" alt="图5-6"></p>
+<p>因此，如果每一个<span class="math inline">\(P[B_{m}]\)</span>都大于0的话，那么这无限个概率加起来，会远远超过1，那么这个bound也就不会有任何意义。</p>
+<p>所以这个bound到底出了什么问题？我们用union bound的出发点是：对不同的hypothesis来讲，坏事不重叠（或者说不怎么重叠）。但是实际上，对两个相似的hypothesis，其<span class="math inline">\(BAD\,DATASET\)</span>其实是重叠的： <img src="http://oky5aqxds.bkt.clouddn.com/5-7.png" alt="图5-7"></p>
+<p>图中，右边是对不同的hypothesis重叠的bad event的一种形象的表示。因此，在这种情况下，union-bound是对真实bound的一种<strong>过分估计（over-estimating）</strong>。</p>
+<p>那为了对付这种重叠的情况，第一步就是把无限的hypothesis分成有限多类，每一类里是差不多的hypothesis。</p>
+<p>我们先举个例子，我们假设平面上所有的线、所有的perceptron就是我们的hypothesis set。那么：</p>
+<ul>
+<li>有无限多条线（<span class="math inline">\(\infty\)</span>）</li>
+<li>但是如果只有1个输入向量<span class="math inline">\(\mathbf{x}_1\)</span>，那么显然在我们的眼中只有两种线： <img src="http://oky5aqxds.bkt.clouddn.com/5-8.png" alt="图5-8"></li>
+<li>那有2个点的时候呢？按照我们之前的推理方法，一共有4种： <img src="http://oky5aqxds.bkt.clouddn.com/5-9.png" alt="图5-9"></li>
+<li>那么有3个点的时候呢？
+<ul>
+<li>如果是三角形的情形，也就是OX的每一种组合都线性可分的情况下，是有8种组合的。</li>
+<li>如果是三点共线的情形，则只有6种线：（在共线或重叠的情况下，都会少于8种） <img src="http://oky5aqxds.bkt.clouddn.com/5-10.png" alt="图5-10"></li>
+</ul></li>
+<li>那么4个点的时候呢？
+<ul>
+<li>如果是四边形的情形，会有1种及其对称的做不到： <img src="http://oky5aqxds.bkt.clouddn.com/5-11.png" alt="图5-11"><br>
+之所以乘2，是因为其他那7种是OX完全对称的，将直线两侧调换一下即可。</li>
+</ul></li>
+</ul>
+<p>从前面的推导，我们知道，如果从有限的数据看出去，我们的线的种类是有限的。这个种类的个数，我们称之为<strong>“effective number of lines”</strong>：</p>
+<div class="figure">
+<img src="http://oky5aqxds.bkt.clouddn.com/5-12.png" alt="图5-12">
+<p class="caption">图5-12</p>
+</div>
+<p>我们可以知道，这个effective number of lines一定是不会超过<span class="math inline">\(2^N\)</span>的，表示这个数字是有限的。如果我们可以用这个数字取代<span class="math inline">\(M\)</span>： <span class="math display">\[ P[|E_{in}(g) - E_{out}(g)| &gt; \epsilon] \le 2*effective(N)exp(-2\epsilon^2N)  \]</span><br>
+那么当：</p>
+<ul>
+<li><span class="math inline">\(effective(N)\)</span>可以代替<span class="math inline">\(M\)</span></li>
+<li>且<span class="math inline">\(effective(N) &lt;&lt; 2^N\)</span>时，</li>
+</ul>
+<p>当N增大到很大时，上式右面的bound就会趋向于0。这样即使是无限条线，我们也可以说我们学到了东西。这暂时只是我们的猜想，我们要花一些力气，才能证明这是对的。</p>
+<h2 id="effective-number-of-hypotheses">Effective Number of Hypotheses</h2>
+<p>接下来我们来看，如果我们用线的话，究竟有几种不一样的线。如果我们将来用高维度的hyperplane等的话，又应该怎么说明究竟有几种hypothesis这种事。</p>
+<p>我们称： <span class="math display">\[ h(\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N) = (h(\mathbf{x}_1), h(\mathbf{x}_2), \ldots, h(\mathbf{x}_N)) \in \{x, o\}^N\]</span> 为一个<strong>dichotomy</strong>（二分，意为把数据集分成两半），相当于只从<span class="math inline">\(\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N\)</span>的角度来看hypothesis的不同。</p>
+<p>而<span class="math inline">\(H(\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N)\)</span>则表示H能在<span class="math inline">\(\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N\)</span>上实现的所有dichotomy。下表是hypothesis和dichotomy的一个对比： <img src="http://oky5aqxds.bkt.clouddn.com/5-13.png" alt="图5-13"></p>
+<p>于是，<span class="math inline">\(|H(\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N)|\)</span>就是我们用来替代M的一个选项。</p>
+<p>我们可以看到，我们的<span class="math inline">\(|H(\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N)|\)</span>其实是依赖于我们的输入<span class="math inline">\(\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N\)</span>的。为了消除这个影响，我们选择dichotomy set最大的那一个就好了： <span class="math display">\[m_H(N) = \max_{\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N \in X}{|H(\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_N)|}\]</span> 我们称这个函数为<strong>growth function（成长函数）</strong>，是跟我们的hypothesis set有关的。通过前面，我们知道，这个函数的输出一定是有限的，即<span class="math inline">\(\le 2^N\)</span>。</p>
+<p>对perceptron的hypothesis set来说，写出来这个growth function会有点难，我们先来看一些简单的例子：</p>
+<ul>
+<li>Positive Ray (1-D perceptron的一半)：<span class="math inline">\(m_H(N) = N+1 &lt;&lt; 2^N\)</span> <img src="http://oky5aqxds.bkt.clouddn.com/5-14.png" alt="图5-14"></li>
+<li>Positive Interval：<span class="math inline">\(m_H(N) = {N+1 \choose 2} + 1 = \frac{1}{2}N^2 + \frac{1}{2}N + 1 &lt;&lt; 2^N\)</span> <img src="http://oky5aqxds.bkt.clouddn.com/5-15.png" alt="图5-15"></li>
+<li>Convex Set：<span class="math inline">\(m_H(N) = 2^N\)</span> <img src="http://oky5aqxds.bkt.clouddn.com/5-16.png" alt="图5-16"> 我们称我们的N个输入被H <strong>shattered（击倒）</strong>，当且仅当我们能找到N个点（可能是特别的N个点），其上的<span class="math inline">\(2^N\)</span>个dichotomy都可以被H做出来，那么此时<span class="math inline">\(m_H(N) = 2^N\)</span>。</li>
+</ul>
+<h2 id="break-point">Break Point</h2>
+<p>我们现在已知的growth function有：</p>
+<ul>
+<li>Positive Ray: <span class="math inline">\(m_H(N) = N+1\)</span></li>
+<li>Positive Interval: <span class="math inline">\(m_H(N) = {N+1 \choose 2} + 1\)</span></li>
+<li>Convex Set: <span class="math inline">\(m_H(N) = 2^N\)</span></li>
+<li>2D Perceptron: <span class="math inline">\(m_H(N) &lt; 2^N\)</span>在某些情况下</li>
+</ul>
+<p>如果我们现在用<span class="math inline">\(m_H(N)\)</span>取代<span class="math inline">\(M\)</span>的话，会怎样呢？ <span class="math display">\[ P[|E_{in}(g) - E_{out}(g)| &gt; \epsilon] \le 2*m_{H}(N)exp(-2\epsilon^2N)  \]</span> 我们可以得知，如果<span class="math inline">\(m_H(N)\)</span>是多项式的话，就是好的，因为其增长速度小于后面那一项；而如果<span class="math inline">\(m_H(N)\)</span>是指数式的话，就是不好的，因为和后面那一项的增长速度一个量级，我们不能确保N够大时，<span class="math inline">\(E_{in}\)</span>和<span class="math inline">\(E_{out}\)</span>很接近。那么2D Perceptron到底是好的，还是不好的呢？</p>
+<p>我们再对growth function多做一个小小的定义。对一个hypothesis set H，我们定义k为它的<strong>break point</strong>，当且仅当k使得<span class="math inline">\(m_{H}(k)&lt;2^k\)</span>。可想而知，k+1, k+2, …也都是break point。我们只关注minimum break point。对2d perceptron， min break point就是4.</p>
+<p>对于之前讨论过的一些growth function，它们对应的break point分别是： <img src="http://oky5aqxds.bkt.clouddn.com/5-17.png" alt="图5-17"></p>
+<p>从上面图中，我们产生了一个猜想：</p>
+<ul>
+<li>当没有break point时，<span class="math inline">\(m_H(N) = 2^N\)</span></li>
+<li><strong>当有break point时，<span class="math inline">\(m_H(N) = O(N^{k-1})\)</span></strong></li>
+</ul>
+<p>那我们的猜想究竟对不对呢？且看下次课程。</p>
+<h2 id="summary">Summary</h2>
+<div class="figure">
+<img src="http://oky5aqxds.bkt.clouddn.com/5-18.png" alt="图5-18">
+<p class="caption">图5-18</p>
+</div>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[机器学习基石第四讲：Learning is Impossible 笔记]]></title>
       <url>http://gtbai.github.io/2017/02/14/mlfound-4/</url>
       <content type="html"><![CDATA[<p>今天要探讨的问题是Feasibility of Learning，即Learning是不是可行的。我们上次埋了一个梗，说Learning搞不好是做不到的。我们先讨论这个问题，再研究即使Learning是做不到的，我们能否加上一些假设或者使用一些方法，使Learning是做得到的。</p>
