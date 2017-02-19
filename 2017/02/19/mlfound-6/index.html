@@ -1,0 +1,124 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="白广通的博客"><title>机器学习基石第六讲：Theory of Generalization 笔记 | Bruce's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/5.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">机器学习基石第六讲：Theory of Generalization 笔记</h1><a id="logo" href="/.">Bruce's Blog</a><p class="description">Stay hungry, stay foolish.</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/history/"><i class="fa fa-book"> 历史</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">机器学习基石第六讲：Theory of Generalization 笔记</h1><div class="post-meta">Feb 19, 2017<span> | </span><span class="category"><a href="/categories/机器学习/">机器学习</a></span><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><a data-disqus-identifier="2017/02/19/mlfound-6/" href="/2017/02/19/mlfound-6/#disqus_thread" class="disqus-comment-count"></a><div class="clear"><div id="toc" class="toc-article"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#restriction-of-break-point"><span class="toc-number">1.</span> <span class="toc-text">Restriction of Break Point</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bounding-function---basic-cases"><span class="toc-number">2.</span> <span class="toc-text">Bounding Function - Basic Cases</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#bounding-function---inducive-cases"><span class="toc-number">3.</span> <span class="toc-text">Bounding Function - Inducive Cases</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#a-pictorial-proof"><span class="toc-number">4.</span> <span class="toc-text">A Pictorial Proof</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#summary"><span class="toc-number">5.</span> <span class="toc-text">Summary</span></a></li></ol></div></div><div class="post-content"><p>我们今天讨论的topic是thoery of generalization，即一般化、举一反三的理论。即在机器学习里面，机器究竟是怎么举一反三的。</p>
+<h2 id="restriction-of-break-point">Restriction of Break Point</h2>
+<p>从上节课我们已经知道，我们希望最终可以用growth function <span class="math inline">\(m_{H}(N)\)</span>来取代逐渐会增长到无限大的M。今天我们要探讨两个问题：</p>
+<ul>
+<li><span class="math inline">\(m_{H}(N)\)</span>会不会增长的很慢</li>
+<li>如果是的话，<span class="math inline">\(m_{H}(N)\)</span>能不能用来取代长得很快，甚至可能是无限大的M</li>
+</ul>
+<p>growth function <span class="math inline">\(m_{H}(N)\)</span>是指在N个点上，hypothesis set最多能够产生的dichotomy个数。我们来回顾一下我们已经知道的growth function： <img src="http://oky5aqxds.bkt.clouddn.com/6-1.png" alt="图6-1"></p>
+<p>我们还知道，一旦k是一个break point，k+1, k+2, …都会是break point。那么在这种情况下，break point还会给我们的growth function更多的限制吗？</p>
+<p>假如已知某个H的break point k=2，那它告诉我们什么信息呢？</p>
+<ul>
+<li>N=1时，按照定义，<span class="math inline">\(m_{H}(N) = 2\)</span></li>
+<li>N=2时，按照定义，<span class="math inline">\(m_{H}(N) \le 3 &lt; 4\)</span></li>
+<li>N=3时呢？按照break point的定义，我们要满足任意两个点不被shatter： 因此，下面这种情况中，第四种情形就不能加入进来： <img src="http://oky5aqxds.bkt.clouddn.com/6-2.png" alt="图6-2"> 经过一番尝试，我们发现4个就是极限，第5个就是不能加进来的。因此，遵守任意两个不能被shatter的承诺下，我们能产生的dichotomy最多只有4种。<span class="math inline">\(m_{H}(N) = 4 &lt;&lt; 8\)</span></li>
+</ul>
+<p>我们发现，只要有一个break point，在更大的N处产生dichotomy时，会增加不少的限制。于是我们现在的主意是： 如果我们已经知道了k是一个break point，到底在有N个点时能够产生多少种可能性。如果这个可能性的个数是多项式，那么由于我们的growth function的最大值就是这个数，于是growth function<span class="math inline">\(m_{H}(N)\)</span>也一定是个多项式。</p>
+<h2 id="bounding-function---basic-cases">Bounding Function - Basic Cases</h2>
+<p>我们定义<strong>bounding function</strong> B(N,k)为break point为k时，<span class="math inline">\(m_{H}(N)\)</span>最大的可能值。</p>
+<p>如果我们把我们的dichotomy看做一个个长度为N的向量，把它的某些维度遮起来，只看k个维度的话，我们不希望看到<span class="math inline">\(2^k\)</span>种情况，也就是被shatter的情况。</p>
+<p>如果我们能对这个bounding function的性质做出描述，我们就能忽略一些hypothesis set的一些无关的细节。例如B(N, 3)就同时约束了</p>
+<ul>
+<li>positive ray (k=3)</li>
+<li>1D perceptron (k=3)</li>
+</ul>
+<p>这样我们就不用去管这两个hypothesis set的差别。</p>
+<p>我们的现在的目标就是证明：<span class="math inline">\(B(N,k) \le poly(N)\)</span>，即bounding function的成长速度和多项式一样。</p>
+<p>我们先来填关于bounding function的一个表：</p>
+<ul>
+<li>B(2,2) = 3</li>
+<li>B(3,2) = 4 （上一节中“图形化”的证明）</li>
+<li>B(N,1) = 1 （前一节的测验题）</li>
+<li><span class="math inline">\(B(N,k) = 2^N\;for\;N&lt;k\)</span></li>
+<li><span class="math inline">\(B(N,k) = 2^N - 1\;for\;N=k\)</span></li>
+</ul>
+<div class="figure">
+<img src="http://oky5aqxds.bkt.clouddn.com/6-3.png" alt="图6-3">
+<p class="caption">图6-3</p>
+</div>
+<p>虽然我们已经填完了表格的大半，但是其实没有填的那部分才是重中之重。</p>
+<h2 id="bounding-function---inducive-cases">Bounding Function - Inducive Cases</h2>
+<p>现在我们想办法填B(4,3)的值。我们猜想它的值可能和B(3,?)其中的某一个值有关。</p>
+<p>我们可以写一个程序，去搜寻长度为4的vector所组成的dichotomy set在不违反break point是3的情况下，最大是多少。经过一番搜寻，我们发现B(4,3)=11: <img src="http://oky5aqxds.bkt.clouddn.com/6-4.png" alt="图6-4"></p>
+<p>那么我们怎么把B(4,3)规约到B(3,?)的情况上去呢？</p>
+<p>我们可以整理一下我们找到的B(4,3)的“解”： 把里面的dichotomy分成了两部分：橘色-成双成对的部分，和紫色-形单影只的部分。 <span class="math display">\[ B(4,3) = 11 = 2*\alpha + \beta\]</span> <img src="http://oky5aqxds.bkt.clouddn.com/6-5.png" alt="图6-5"></p>
+<p>如果我们把<span class="math inline">\(\mathbf{x}_4\)</span>遮住，则只有<span class="math inline">\(\alpha+\beta\)</span>个dichotomy。又因为任何3个点不能shatter，所以： <span class="math display">\[ \alpha + \beta \le B(3,3)\]</span></p>
+<p>如果我们在把<span class="math inline">\(\mathbf{x}_4\)</span>遮住以后，只看橙色部分。因为它们在<span class="math inline">\(\mathbf{x}_4\)</span>上是成双成对的，因此在<span class="math inline">\(\alpha\)</span>中，我们不能shatter任意两个x。因此： <span class="math display">\[ \alpha \le B(3,2)\]</span></p>
+<p>把上面的整理起来的话： <span class="math display">\[
+\begin{align}
+               B(4,3) &amp; = 2\alpha + \beta \\
+       \alpha + \beta &amp; \le B(3,3)  \\
+               \alpha &amp; \le B(3,2)  \\
+   \Rightarrow B(4,3) &amp; \le B(3,3) + B(3,2)
+\end{align}
+\]</span></p>
+<p>我们稍微推广一下，就有了： <span class="math display">\[
+\begin{align}
+               B(N,k) &amp; = 2\alpha + \beta \\
+       \alpha + \beta &amp; \le B(N-1,k)  \\
+               \alpha &amp; \le B(N-1,k-1)  \\
+   \Rightarrow B(N,k) &amp; \le B(N-1,k) + B(N-1,k-1)
+\end{align}
+\]</span> 这样，我们便可以继续填表了： <img src="http://oky5aqxds.bkt.clouddn.com/6-6.png" alt="图6-6"> 注意，我们填进表中的值并非真正的值，而是上限。</p>
+<p>于是，我们现在便有了bounding function的上限，即上限的上限。</p>
+<p>有了前面的基础，我们可以尝试证明一个定理： <span class="math display">\[  B(N,k) \le \sum_{i=0}^{k-1}{N \choose i} \]</span> 如果能证明这个，当然就好了，因为<span class="math inline">\({N \choose i}\)</span>中的最高项就是<span class="math inline">\(N^{k-1}\)</span>。</p>
+<p>这里的证明其实是一个很简单的数学归纳法，就不详细展开了。</p>
+<p>好消息是，growth function会被bounding function限制住，bounding function会被bounding function的上限限制住，而bounding function的上限又会被一个多项式限制住。这个多项式跟break point k有关。因此只要我们找到了一线曙光k，最终我们的growth function就一定会被多项式bound住。</p>
+<p>值得说明的是，其实我们可以证明bounding function的上限其实是等于<span class="math inline">\(\sum_{i=0}^{k-1}{N \choose i}\)</span>，但是用到的证明技巧可能比较难。</p>
+<p>现在我们来看看以前看过的例子，看看我们总结出的关于bounding function的上限的定理是不是适用： <img src="http://oky5aqxds.bkt.clouddn.com/6-7.png" alt="图6-7"></p>
+<p>我们最关注的其实是是我们写不出growth function的2D perceptron，但是我们现在能够写出它bounding function的上限了。这说明，我们可以仅仅通过一个break point就能bound住growth function。</p>
+<h2 id="a-pictorial-proof">A Pictorial Proof</h2>
+<p>那我们现在有了growth function是像多项式一样地增长，我们能不能就用它替换finite bin的Hoeffding中的M，事情即解决了呢？</p>
+<p>可惜，事情并没有这么简单。</p>
+<p>我们想要的是： <span class="math display">\[ P[|E_{in}(g) - E_{out}(g)| &gt; \epsilon] \le 2*m_{H}(N)exp(-2\epsilon^2N)  \]</span> 但实际上，当N够大的时候，我们能证明的是： <img src="http://oky5aqxds.bkt.clouddn.com/6-8.png" alt="图6-8"> <span class="math display">\[ P[|E_{in}(g) - E_{out}(g)| &gt; \epsilon] \le 2*2*m_{H}(2N)exp(-2\frac{1}{16}\epsilon^2N)  \]</span> 这个证明非常的technical，但是其中的有些技巧和我们将来的一些讨论都还蛮有关系的，或用到我们之前的某些证明技巧。所以我们会简略地讲一些，这些常数是怎么出现的。但是不会讨论最底层的那些证明是什么样子的。</p>
+<p><strong>第一个步骤，用<span class="math inline">\(E_{in}’\)</span>来代替<span class="math inline">\(E_{out}\)</span></strong>：</p>
+<p>由于H是无限的，h稍微不同，就会造成<span class="math inline">\(E_{out}(h)\)</span>的不同。因此，我们要先把<span class="math inline">\(E_{out}(h)\)</span>替换掉。为了估计<span class="math inline">\(E_{out}(h)\)</span>，我们抽样一个大小为N的验证数据集D’来计算<span class="math inline">\(E_{in}&#39;\)</span>，也许我们的<span class="math inline">\(E_{in}&#39;\)</span>就可以取代<span class="math inline">\(E_{out}\)</span>。</p>
+<p>下面这个图表示了<span class="math inline">\(E_{in}\)</span>和<span class="math inline">\(E_{in}&#39;\)</span>的概率分布：</p>
+<div class="figure">
+<img src="http://oky5aqxds.bkt.clouddn.com/6-9.png" alt="图6-9">
+<p class="caption">图6-9</p>
+</div>
+<p>从中我们可以看到，如果坏事情发生，也就是<span class="math inline">\(E_{in}\)</span>和<span class="math inline">\(E_{out}\)</span>差的很远，那么有很大几率（大于<span class="math inline">\(\frac{1}{2}\)</span>）的几率，<span class="math inline">\(E_{in}\)</span>和<span class="math inline">\(E_{in}&#39;\)</span>也差得很远。</p>
+<p>这件事情拿来用之后，就有： <img src="http://oky5aqxds.bkt.clouddn.com/6-10.png" alt="图6-10"></p>
+<p>做完这一步之后，我们就顺利地换掉了<span class="math inline">\(E_{out}\)</span>。我们通常把D’称为<strong>ghost data</strong>，因为它其实是不存在的，只是我们想象如果能够再抽一次data。</p>
+<p><strong>第二个步骤是，将H中的h分类</strong>：</p>
+<p>现在我们已经有了在D上做出来的<span class="math inline">\(E_{in}\)</span>，和在ghost data D’上做出来的<span class="math inline">\(E_{in}&#39;\)</span>之后，现在我们可以请我们的<span class="math inline">\(m_{H}\)</span>出场了。 可想而知，如果不同的h在D和D‘上表现一样，那么我们便可以认为它们是一类hypothesis。因此，无限大的H变成了<span class="math inline">\(|H(\mathbf{x}_1, \ldots, \mathbf{x}_N, \mathbf{x}_1&#39;, \ldots, \mathbf{x}_N&#39;)|\)</span>种。于是，我们便可以在这<span class="math inline">\(m_{H}(2N)\)</span>种hypothesis上使用union bound。下面是对应于这段推导的一个示意图： <img src="http://oky5aqxds.bkt.clouddn.com/6-11.png" alt="图6-11"></p>
+<p>使用这个将H中的hypothesis分类的技巧之后，有： <img src="http://oky5aqxds.bkt.clouddn.com/6-12.png" alt="图6-12"></p>
+<p><strong>第三个步骤是，使用Hoeffding定理</strong>：</p>
+<p>现在我们关注到对固定的hypothesis，两次sampling的差别。<br>
+考虑一个有2N个数据点的罐子，两次sample每次N个，可以认为是一次sample N个，留下剩下的N个，比较他们的差别；也可以认为是sample N个，比较它和所有的差别： <span class="math display">\[ |E_{in}-E_{in}&#39;| &gt; \frac{\epsilon}{2} \Leftrightarrow  |E_{in}-\frac{E_{in}+E_{in}&#39;}{2}| &gt; \frac{\epsilon}{4}\]</span></p>
+<p>于是我们就可以用Hoeffding来衡量局部和整体的差别。这里与general的Hoeffding唯一的不同就是，这里的罐子更小，我们拿出来的弹珠不会再放回去，因此罐子中橘色/绿色弹珠的比例是在变的。这种不一样的Hoeffding叫做Hoeffding without replacement。</p>
+<p>使用了这个Hoeffding without replacement之后，我们有： <img src="http://oky5aqxds.bkt.clouddn.com/6-13.png" alt="图6-13"></p>
+<p>总结来说，我们证明了机器学习中一个非常重要的定理<strong>VC bound(Vapnik-Chervonenkis bound)</strong>，其中V和C分别是机器学习领域两个非常重要的人物，他们推导出来了这个bound： <span class="math display">\[P[|E_{in}(h) - E_{out}(h)| &gt; \epsilon] \le 4m_H(2N)exp(-\frac{1}{8}\epsilon^2N)\]</span></p>
+<p>推出VC bound的三个步骤是：</p>
+<ul>
+<li>用<span class="math inline">\(E_{in}&#39;\)</span>来代替<span class="math inline">\(E_{out}\)</span>（产生了bound右面，最前面的4）</li>
+<li>把H中的hypothesis分门别类（产生了bound右面，<span class="math inline">\(m_{H}\)</span>中的2N）</li>
+<li>使用了Hoeffding without replacement（产生了bound右面，括号中的<span class="math inline">\(\frac{1}{8}\)</span>）</li>
+</ul>
+<p>于是，我们现在解决了2D perceptron的问题。我们知道它的break point是4，所以它的growth function增长地不会比<span class="math inline">\(N^3\)</span>快。当N够大的时候，坏事发生的几率就很小，因此当A选择<span class="math inline">\(E_{in}\)</span>最小的h作为g，那么它的<span class="math inline">\(E_{out}\)</span>大概也是最小的。也就是说，数据够多时，2D perceptron是能够有学习的效果的。</p>
+<p>本节的测验题是： <img src="http://oky5aqxds.bkt.clouddn.com/6-14.png" alt="图6-14"> 我们可以看到，即使是在有10000个训练数据的情况下，坏事发生的几率也不是特别小（0.289）。这是因为，我们在推VC bound的过程中，用了很多近似，导致这个bound不是很紧。那既然这样，我们为什么还要花这么多力气推导它呢？且看下回分解。</p>
+<h2 id="summary">Summary</h2>
+<div class="figure">
+<img src="http://oky5aqxds.bkt.clouddn.com/6-15.png" alt="图6-15">
+<p class="caption">图6-15</p>
+</div>
+<p>下节课我们会讨论，在实践中如何使用break point。</p>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://gtbai.github.io/2017/02/19/mlfound-6/" data-id="cizd075rx000dn18frexe0zfa" class="article-share-link">分享到</a><div class="tags"><a href="/tags/机器学习基石/">机器学习基石</a></div><div class="post-nav"><a href="/2017/02/18/mlfound-5/" class="next">机器学习基石第五讲：Training versus Testing 笔记</a></div><div id="disqus_thread"><script>var disqus_shortname = 'gtbai';
+var disqus_identifier = '2017/02/19/mlfound-6/';
+var disqus_title = '机器学习基石第六讲：Theory of Generalization 笔记';
+var disqus_url = 'http://gtbai.github.io/2017/02/19/mlfound-6/';
+(function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//gtbai.disqus.com/count.js" async></script></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">6</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/机器学习基石/" style="font-size: 15px;">机器学习基石</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/19/mlfound-6/">机器学习基石第六讲：Theory of Generalization 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/18/mlfound-5/">机器学习基石第五讲：Training versus Testing 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/14/mlfound-4/">机器学习基石第四讲：Learning is Impossible 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/11/mlfound-3/">机器学习基石第三讲：Types of Learning 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/09/mlfound-2/">机器学习基石第二讲：Learning to Answer Yes/No 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/06/mlfound-1/">机器学习基石第一讲：The Learning Problem 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/05/hello-world/">Hello World</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> 最近评论</i></div><script type="text/javascript" src="//gtbai.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">© <a href="/." rel="nofollow">Bruce's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a><br/><span id="busuanzi_container_site_pv"><i class="fa fa-mouse-pointer"></i><span> </span><span rel="nofollow" id="busuanzi_value_site_pv"></span></span><span> | </span><span id="busuanzi_container_site_uv"><i class="fa fa-user-circle-o"></i><span> </span><span rel="nofollow" id="busuanzi_value_site_uv"></span></span></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="/css/jquery.fancybox.css?v=0.0.0"><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script></div></body></html>
