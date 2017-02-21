@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="白广通的博客"><title>机器学习基石第七讲：The VC Dimension 笔记 | Bruce's Blog</title><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/5.0.0/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">机器学习基石第七讲：The VC Dimension 笔记</h1><a id="logo" href="/.">Bruce's Blog</a><p class="description">Stay hungry, stay foolish.</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a><a href="/history/"><i class="fa fa-book"> 历史</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">机器学习基石第七讲：The VC Dimension 笔记</h1><div class="post-meta">Feb 20, 2017<span> | </span><span class="category"><a href="/categories/机器学习/">机器学习</a></span><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><a data-disqus-identifier="2017/02/20/mlfound-7/" href="/2017/02/20/mlfound-7/#disqus_thread" class="disqus-comment-count"></a><div class="clear"><div id="toc" class="toc-article"><div class="toc-title">文章目录</div><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#definition-of-vc-dimension"><span class="toc-number">1.</span> <span class="toc-text">Definition of VC Dimension</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#vc-dimension-of-perceptrons"><span class="toc-number">2.</span> <span class="toc-text">VC Dimension of Perceptrons</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#physical-intuition-of-vc-dimension"><span class="toc-number">3.</span> <span class="toc-text">Physical Intuition of VC Dimension</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#interpreting-vc-dimension"><span class="toc-number">4.</span> <span class="toc-text">Interpreting VC Dimension</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#summary"><span class="toc-number">5.</span> <span class="toc-text">Summary</span></a></li></ol></div></div><div class="post-content"><p>今天我们要讲的是VC Dimension，顾名思义，是和上次讲的VC Bound有关系的。</p>
+<a id="more"></a>
+<h2 id="definition-of-vc-dimension">Definition of VC Dimension</h2>
+<p>回顾一下上次讲的。我们上次讲的是theory of generalization（一般化、举一反三的理论）：我们确保了<span class="math inline">\(E_{in} \approx E_{out}\)</span>，当<span class="math inline">\(m_{H}(N)\)</span>在某个k的地方break，而且N够大： <span class="math display">\[m_{H}(N) \le B(N, k) = \sum_{i=0}^{k-1}{N \choose i}\]</span></p>
+<p>将<span class="math inline">\(B(N, k)\)</span>和<span class="math inline">\(N^{k-1}\)</span>的表列出，我们有： <img src="http://oky5aqxds.bkt.clouddn.com/7-1.png" alt="图7-1"></p>
+<p>从上表中我们可以看到，当N和k很大时（其实也不用很大，<span class="math inline">\(N \ge 2, k \ge 3\)</span>即可），我们有： <span class="math display">\[m_{H}(N) \le B(N, k) = \sum_{i=0}^{k-1}{N \choose i} \le N^{k-1}\]</span></p>
+<p>于是在将来在我们写growth function时，我们就不必再写那么复杂的式子，只需要知道它的增长速率不会超过<span class="math inline">\(N^{k-1}\)</span>。</p>
+<p>根据上节课的内容： <img src="http://oky5aqxds.bkt.clouddn.com/7-2.png" alt="图7-2"></p>
+<p>上面最后一步不等式其实是将growth function替换成了它上限的上限的上限，这个代换的条件是<strong>N够大，k够大</strong>。而N够大早已是我们的条件之一，这里只是引入了k够大这一小小的条件。</p>
+<p>这时，如果以下几个条件成立，我们就可以说我们能够举一反三，未来测试的表现和现在训练的表现会是类似的：</p>
+<ul>
+<li><span class="math inline">\(m_{H}(N)\)</span>有break point k （好的H）</li>
+<li>N够大（好的D）</li>
+<li><strong>A能够挑选出<span class="math inline">\(E_{in}\)</span>最小的h为g</strong>（好的A）</li>
+</ul>
+<p>当然这是比较理想的情况，但是实际上，我们没办法保证这些事情。所以除了这些之外，有时我们还需要一些<strong>好的运气</strong>，这样我们就大概能够做到学习。</p>
+<p>现在我们开始讲<strong>VC Dimension</strong>。</p>
+<p>这里的VC Dimension实际就是我们试图给之前的break point一个正式地名称。但实际上，VC Dimension是指最大的非break point。正式的定义如下：</p>
+<p>一个hypothesis set H的VC dimension，一般由<span class="math inline">\(d_{VC}(H)\)</span>表示，是指<strong>使得<span class="math inline">\(m_{H}(N)=2^N\)</span>成立的最大的N</strong>。</p>
+<ul>
+<li>H能够shatter的最多输入点的个数</li>
+<li><p><span class="math inline">\(d_{VC} = min\;k - 1\)</span></p></li>
+<li>如果<span class="math inline">\(N \le d_{VC}\)</span> <span class="math inline">\(\Rightarrow\)</span> H能够shatter<strong>某些</strong>N个输入</li>
+<li><p>如果<span class="math inline">\(k &gt; d_{VC}\)</span> <span class="math inline">\(\Rightarrow\)</span> k一定是H的break point。</p></li>
+</ul>
+<p>因此我们可以把上面我们的结论换一个说法，用VC dimension去替换k-1，于是有： <span class="math display">\[ 当N \ge 2, d_{VC} \ge 2时，m_{H}(N) \le N^{d_{VC}} \]</span></p>
+<p>我们再来回顾一下我们之间看过的几个例子： <img src="http://oky5aqxds.bkt.clouddn.com/7-3.png" alt="图7-3"></p>
+<p>这样一来，我们便有了一个新的概念：好的hypothesis set就意味着有有限的VC dimension。</p>
+<p>如果我们有一个好的hypothesis set，即它的VC dimension有限，那么这就意味着<span class="math inline">\(E_{out}(g) \approx E_{in}(g)\)</span>。这个结论成立：</p>
+<ul>
+<li>与演算法A无关</li>
+<li>和输入的分布P无关</li>
+<li>与目标函数f无关</li>
+</ul>
+<p>如此一来，我们便有了完整的机器学习流程： <img src="http://oky5aqxds.bkt.clouddn.com/7-4.png" alt="图7-4"></p>
+<p>我们做到了，即使在最坏的情况下，<span class="math inline">\(E_{in}\)</span>和<span class="math inline">\(E_{out}\)</span>也是接近的。</p>
+<h2 id="vc-dimension-of-perceptrons">VC Dimension of Perceptrons</h2>
+<p>现在有了VC dimension之后，我们回到我们所学过的第一个机器学习算法PLA。</p>
+<p>如果在2D的情况下，有这么两个故事轴线： <img src="http://oky5aqxds.bkt.clouddn.com/7-5.png" alt="图7-5"></p>
+<p>现在我们还没有解决的问题是：这个演算法是否可以用在多维的情况。那么在多维的情况下，到底发生了什么事情呢？</p>
+<p>我们要解决这个问题，可以从多维的 VC dimension下手：</p>
+<ul>
+<li>1D perceptron: <span class="math inline">\(d_{VC} = 2\)</span></li>
+<li>2D perceptron: <span class="math inline">\(d_{VC} = 3\)</span></li>
+</ul>
+<div class="figure">
+<img src="http://oky5aqxds.bkt.clouddn.com/7-6.png" alt="图7-6">
+<p class="caption">图7-6</p>
+</div>
+<ul>
+<li><strong>因此我们猜想：d-D perceptron：<span class="math inline">\(d_{VC} = d+1\)</span></strong></li>
+</ul>
+<p>为了证明这个猜想，我们需要证明两个方向：</p>
+<ul>
+<li><span class="math inline">\(d_{VC} \ge d+1\)</span></li>
+<li><span class="math inline">\(d_{VC} \le d+1\)</span></li>
+</ul>
+<p>现在我们给大家看一组特别的数据，可以被我们的perceptron给shatter： <img src="http://oky5aqxds.bkt.clouddn.com/7-7.png" alt="图7-7"></p>
+<p>其中，灰色的那个维度就是对应于threshold那个<span class="math inline">\(x_{0}\)</span>维度。这里值得注意的是：这里的矩阵X是<strong>可逆的</strong>。</p>
+<p>那可逆这件事对我们有什么意义呢？ <img src="http://oky5aqxds.bkt.clouddn.com/7-8.png" alt="图7-8"></p>
+<p>这样一来，我们便证明了<span class="math inline">\(d_{VC} \ge d+1\)</span>这个方向。</p>
+<p>为了证明<span class="math inline">\(d_{VC} \le d+1\)</span>，我们要证明对于所有大小为d+2的数据集，我们都无法shatter。这样直接证明当然是有些困难的，接下来我们先在我们前面那个特殊的数据集上加进去一个数据看看： <img src="http://oky5aqxds.bkt.clouddn.com/7-9.png" alt="图7-9"></p>
+<p>通过上面我们可以看出：如果我们把<span class="math inline">\(\mathbf{x}_4\)</span>表示成<span class="math inline">\(\mathbf{x}_1, \mathbf{x}_2, \mathbf{x}_3\)</span>的线性组合，那么这个<strong>线性组合的依赖性会限制我们产生的dichotomy的个数</strong>。</p>
+<p>对于一般的数据集来说：</p>
+<div class="figure">
+<img src="http://oky5aqxds.bkt.clouddn.com/7-10.png" alt="图7-10">
+<p class="caption">图7-10</p>
+</div>
+<p>我们注意到，这个矩阵的行数d+2大于列数d+1。根据线性代数，我们知道有线性依赖关系的存在，即我们可以把<span class="math inline">\(\mathbf{x}_{d+2}\)</span>表示成如下格式： <span class="math display">\[ \mathbf{x}_{d+2} = a_1\mathbf{x}_1 + a_2\mathbf{x}_2 + \ldots + a_{d+1}\mathbf{x}_{d+1} \]</span> 其中的<span class="math inline">\(a_{i}\)</span>有的是正的，有的是负的，有的是0，但不会全部是0。</p>
+<p>如果现在有一个<span class="math inline">\(\mathbf{w}\)</span>，在前面d+1个数据上产生的dichotomy与其系数的符号是一致的： <img src="http://oky5aqxds.bkt.clouddn.com/7-11.png" alt="图7-11"></p>
+<p>那么可知我们不能产生<span class="math inline">\((sign(a_1), sign(a_2), \ldots, sign(a_{d+1}), x)\)</span>这个dichotomy。所以我们就证明了任何d+2个点我们都不能shatter，于是我们就证明了<span class="math inline">\(d_{VC} \le d+1\)</span>。</p>
+<h2 id="physical-intuition-of-vc-dimension">Physical Intuition of VC Dimension</h2>
+<p>我们之所以叫它VC dimension，是因为它等于d+1，而其中的d就是perceptron的维度。进一步来说，perceptron中的参数<span class="math inline">\(\mathbf{w} = (w_0, w_1, \cdots, w_d)\)</span>决定了H的自由度。</p>
+<p>我们说H是无限的，是因为假如把每个维度上的数据的值都比作一个“类比式（analog）”的旋钮，那么它们组合起来就会有无限种可能性，因为单单一个旋钮就有无限种可能性： <img src="http://oky5aqxds.bkt.clouddn.com/7-12.png" alt="图7-12"></p>
+<p>那我们看VC dimension，其实它是等于<strong>effective ‘binary’ degrees of freedom</strong>。’binary’是因为我们现在研究的是二元分类问题，而effective是因为那些自由度里有些可能是无效的。这个自由度也就告诉了我们这个H的强度，即最多能够shatter的输入的个数。</p>
+<p>我们来看看我们之前看过的positive ray和positive interval的例子： <img src="http://oky5aqxds.bkt.clouddn.com/7-13.png" alt="图7-13"></p>
+<p>从中我们大致可以看出，<span class="math inline">\(d_{VC}\)</span>实际基本就是自由参数的个数（大致上是对的，但不总是这样）。通常我们在估计VC dimension时，只需要看看自由参数的个数就可以了。</p>
+<p>现在我们来看看M和<span class="math inline">\(d_{VC}\)</span>的关系： <img src="http://oky5aqxds.bkt.clouddn.com/7-14.png" alt="图7-14"></p>
+<p>这样一来，<span class="math inline">\(d_{VC}\)</span>就和M一样，成为了我们将来选择learning model和hypothesis set的一个重要的工具。</p>
+<h2 id="interpreting-vc-dimension">Interpreting VC Dimension</h2>
+<p>现在我们想更深入地了解VC dimension的意义是什么。首先，我们把VC bound重新写过： <img src="http://oky5aqxds.bkt.clouddn.com/7-15.png" alt="图7-15"></p>
+<p>于是我们得到了<span class="math inline">\(\epsilon = \sqrt{\frac{8}{N} ln(\frac{4(2N)^{d_{VC}}}{\delta})}\)</span>。这个式子的意义是，有很大的概率： <span class="math display">\[ (gen.error)|E_{in}(g) - E_{out}(g)| \le \sqrt{\frac{8}{N} ln(\frac{4(2N)^{d_{VC}}}{\delta})}\]</span> <span class="math display">\[ E_{in}(g) - \sqrt{\frac{8}{N} ln(\frac{4(2N)^{d_{VC}}}{\delta})} \le E_{out}(g) \le E_{in}(g) + \sqrt{\frac{8}{N} ln(\frac{4(2N)^{d_{VC}}}{\delta})}\]</span></p>
+<p>这就像一个置信区间，表示<span class="math inline">\(E_{out}(g)\)</span>以一定的概率落在这个区间内部。其中，我们并不太关心左边部分<span class="math inline">\(E_{out}(g)\)</span>的下界，而更关心右边的上界，即结果最坏会有多坏。其中，根号下的部分我们称之为model complexity，表示这个hypothesis set的复杂度给我们的generalization带来的惩罚。记为<span class="math inline">\(\Omega(N,H,\delta)\)</span>。</p>
+<p>下面我们通过画图的方式看看VC dimension给我们的信息： <img src="http://oky5aqxds.bkt.clouddn.com/7-16.png" alt="图7-16"></p>
+<p>这个图告诉我们，最好的VC dimension是在中间的某个地方。将来我们也会时常看到这种图，只不过横轴可能不是VC dimension而是其他的跟它有关的变量。我们会根据这个图设计更好的机器学习的演算法。</p>
+<p>如果我们只是为了降低<span class="math inline">\(E_{in}\)</span>，一味地增加VC dimension，使得H非常的powerful，那恐怕这不是一个最好的选择，因为会给我们的<span class="math inline">\(E_{out}\)</span>带来很大的complexity penalty。</p>
+<p>VC bound其实还有另外一个意思，就是sample complexity，即资料量的复杂度。 <img src="http://oky5aqxds.bkt.clouddn.com/7-17.png" alt="图7-17"></p>
+<p>但是在实践中，我们并不需要去找到 <span class="math inline">\(10000d_{VC}\)</span>这么多的数据，而只需要<span class="math inline">\(10d_{VC}\)</span>就能够得到还不错的learning表现了。</p>
+<p>上面这个问题也说明，VC bound是很<strong>宽松</strong>的。这个宽松的来源是：</p>
+<ul>
+<li>使用Hoeffding时不需要知道<span class="math inline">\(E_{out}\)</span>（对任何分布P，任何target function f都成立）</li>
+<li>使用<span class="math inline">\(m_{H}(N)\)</span>而非<span class="math inline">\(|H(\mathbf{x}_1, (\mathbf{x}_2, \ldots, (\mathbf{x}_N)|\)</span>（对任何一个数据集都成立）</li>
+<li>使用<span class="math inline">\(N_{d_{VC}}\)</span>而非<span class="math inline">\(m_{H}(N)\)</span>（对任何有相同VC dimension的H都成立）</li>
+<li>使用了union bound确保每一个h的<span class="math inline">\(E_{in}\)</span>和<span class="math inline">\(E_{out}\)</span>都不会差太多（对A做出的任何选择都成立）</li>
+</ul>
+<p>这些原因就解释了，为什么实践中需要的数据量比理论上的差很多。</p>
+<p>虽然VC bound很宽松，而且有很多研究者想让它更紧一点。但是如果要做到和VC bound的包容度一样，很难很难做的比VC bound更好。而且VC bound对不同的learning model是差不多宽松的，于是我们将来就可以使用VC dimension去比较不同的learning model的表现。</p>
+<p>这里的VC bound是一个非常理论性的结果，但是我们会拿它告诉我们的“哲学信息”来设计机器学习演算法。</p>
+<h2 id="summary">Summary</h2>
+<div class="figure">
+<img src="http://oky5aqxds.bkt.clouddn.com/7-18.png" alt="图7-18">
+<p class="caption">图7-18</p>
+</div>
+<p>目前我们讨论的都是没有noise且是binary classification的问题。下一次我们会尝试把VC dimension的概念延伸到更多种类的learning的问题上。</p>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://gtbai.github.io/2017/02/20/mlfound-7/" data-id="cizfe2neu00083t8fueomu4cf" class="article-share-link">分享到</a><div class="tags"><a href="/tags/机器学习基石/">机器学习基石</a></div><div class="post-nav"><a href="/2017/02/19/mlfound-6/" class="next">机器学习基石第六讲：Theory of Generalization 笔记</a></div><div id="disqus_thread"><script>var disqus_shortname = 'gtbai';
+var disqus_identifier = '2017/02/20/mlfound-7/';
+var disqus_title = '机器学习基石第七讲：The VC Dimension 笔记';
+var disqus_url = 'http://gtbai.github.io/2017/02/20/mlfound-7/';
+(function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//gtbai.disqus.com/count.js" async></script></div></div></div></div><div class="pure-u-1-4 hidden_mid_and_down"><div id="sidebar"><div class="widget"><div class="search-form"><input id="local-search-input" placeholder="Search" type="text" name="q" results="0"/><div id="local-search-result"></div></div></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/机器学习/">机器学习</a><span class="category-list-count">7</span></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/机器学习基石/" style="font-size: 15px;">机器学习基石</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/02/20/mlfound-7/">机器学习基石第七讲：The VC Dimension 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/19/mlfound-6/">机器学习基石第六讲：Theory of Generalization 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/18/mlfound-5/">机器学习基石第五讲：Training versus Testing 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/14/mlfound-4/">机器学习基石第四讲：Learning is Impossible 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/11/mlfound-3/">机器学习基石第三讲：Types of Learning 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/09/mlfound-2/">机器学习基石第二讲：Learning to Answer Yes/No 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/06/mlfound-1/">机器学习基石第一讲：The Learning Problem 笔记</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/02/05/hello-world/">Hello World</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> 最近评论</i></div><script type="text/javascript" src="//gtbai.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">© <a href="/." rel="nofollow">Bruce's Blog.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a><br/><span id="busuanzi_container_site_pv"><i class="fa fa-mouse-pointer"></i><span> </span><span rel="nofollow" id="busuanzi_value_site_pv"></span></span><span> | </span><span id="busuanzi_container_site_uv"><i class="fa fa-user-circle-o"></i><span> </span><span rel="nofollow" id="busuanzi_value_site_uv"></span></span></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="/css/jquery.fancybox.css?v=0.0.0"><script type="text/javascript" src="/js/search.js?v=0.0.0"></script><script>var search_path = 'search.xml';
+if (search_path.length == 0) {
+   search_path = 'search.xml';
+}
+var path = '/' + search_path;
+searchFunc(path, 'local-search-input', 'local-search-result');
+</script><script type="text/x-mathjax-config">MathJax.Hub.Config({
+  tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+</script><script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML" async></script><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script></div></body></html>

@@ -4,8 +4,28 @@
 
     
   <url>
+    <loc>http://gtbai.github.io/2017/02/20/mlfound-7/</loc>
+    <lastmod>2017-02-21T10:28:49.000Z</lastmod>
+    <data>
+        <display>
+        <title>机器学习基石第七讲：The VC Dimension 笔记</title>
+        <pubTime>2017-02-20T10:13:34.000Z</pubTime>
+        
+        <tag>机器学习基石</tag>
+         
+         
+           
+             
+              <breadCrumb title="机器学习" url="http://gtbai.github.io/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/"/>
+          
+        </display>
+    </data>
+    </url>
+
+    
+  <url>
     <loc>http://gtbai.github.io/2017/02/19/mlfound-6/</loc>
-    <lastmod>2017-02-19T18:24:59.000Z</lastmod>
+    <lastmod>2017-02-21T07:50:06.000Z</lastmod>
     <data>
         <display>
         <title>机器学习基石第六讲：Theory of Generalization 笔记</title>
