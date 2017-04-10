@@ -6,8 +6,7 @@
     <entry>
       <title><![CDATA[Sublime Text中的Project]]></title>
       <url>http://gtbai.github.io/2017/04/10/Sublime-Text%E4%B8%AD%E7%9A%84Project/</url>
-      <content type="html"><![CDATA[<h2 id="前言">前言</h2>
-<p>在学会使用Sublime Text（以下简称为ST）的Project功能之前，你一定有过这样的经历：</p>
+      <content type="html"><![CDATA[<p>在学会使用Sublime Text（以下简称为ST）的Project功能之前，你一定有过这样的经历：</p>
 <ol style="list-style-type: decimal">
 <li>为了能在ST内快速寻找并同时编辑位于同一个顶级目录下的多个文件，<code>⌘+O</code>打开顶级目录，然后在侧边栏内逐级展开目录找到要编辑的文件</li>
 <li>有时需要同时编辑多个不同项目的文件，于是又按下<code>⌘+O</code>在一个新的窗口中打开另一个目录</li>
