@@ -4,6 +4,93 @@
   
     
     <entry>
+      <title><![CDATA[Sublime Text中的Project]]></title>
+      <url>http://gtbai.github.io/2017/04/10/Sublime-Text%E4%B8%AD%E7%9A%84Project/</url>
+      <content type="html"><![CDATA[<h2 id="前言">前言</h2>
+<p>在学会使用Sublime Text（以下简称为ST）的Project功能之前，你一定有过这样的经历：</p>
+<ol style="list-style-type: decimal">
+<li>为了能在ST内快速寻找并同时编辑位于同一个顶级目录下的多个文件，<code>⌘+O</code>打开顶级目录，然后在侧边栏内逐级展开目录找到要编辑的文件</li>
+<li>有时需要同时编辑多个不同项目的文件，于是又按下<code>⌘+O</code>在一个新的窗口中打开另一个目录</li>
+<li>在多个窗口的频繁切换之间，不小心关掉了其中某个窗口，于是又要回到1重新打开关掉的目录。。。</li>
+</ol>
+<p>值得庆幸的是，有了ST的Project功能，你再也不用经历这样的麻烦事了。</p>
+<h2 id="st中project的概念">ST中Project的概念</h2>
+<p>事实上，在ST中，我们所有的编辑工作都是在某一个Project中完成的。每当我们打开一个新的窗口时，就创建了一个新的未命名、未保存的Project。只不过在平时我们并没有注意过这一点，所以没有保存过当前的Project。</p>
+<p>ST中的一个Project由两个文件组成：<code>sublime-project</code>文件和<code>sublime-workspace</code>文件。前者包含了对当前project的定义，后者则包含了一些用户指定的数据，比如打开的文件和对其中每一个的未保存的更改。想要了解更多信息，可以参考<a href="http://www.sublimetext.com/docs/3/projects.html" target="_blank" rel="external">这个页面</a>。</p>
+<h2 id="st中project功能的使用方法">ST中Project功能的使用方法</h2>
+<h3 id="新建工程">新建工程</h3>
+<p><code>Project &gt; Add Folder to Project...</code></p>
+<p>这时侧边栏中将出现刚刚添加的目录。重复这一操作即可向当前Project中添加更多目录。</p>
+<h3 id="保存工程">保存工程</h3>
+<p><code>Project &gt; Save Project As...</code></p>
+<p>将当前项目命名后即可保存到任意位置。每个项目将保存为前述的<code>sublime-project</code>和<code>sublime-workspace</code>两个文件。</p>
+<h3 id="切换工程">切换工程</h3>
+<p><code>Project &gt; Quick Switch Project...</code>或<code>⌘+⌃+P</code>快速切换。</p>
+<p><img src="http://oky5aqxds.bkt.clouddn.com/st-proj.png" alt="ST中切换Project的效果"> 这个就是Project最核心的功能了，能够实现Project间的无缝切换，非常方便。</p>
+<h2 id="小结">小结</h2>
+<p>这篇博文主要是为了纪念我学会使用了ST中的Project功能，免去了很多不必要的麻烦。希望也对你有所帮助。</p>
+]]></content>
+    </entry>
+    
+    <entry>
+      <title><![CDATA[机器学习基石第八讲：Noise and Error 笔记]]></title>
+      <url>http://gtbai.github.io/2017/02/22/mlfound-8/</url>
+      <content type="html"><![CDATA[<p>今天讲的课题就是Noise and Error。其中，noise就是噪音，error就是错误，我们要研究的就是在有noise的情况下，怎么衡量这些error。</p>
+<a id="more"></a>
+<h2 id="noise-and-probablistic-target">Noise and Probablistic Target</h2>
+<p>我们上节课已经掌握了机器学习中最重要的一项工具 - vc dimension。我们知道如果我们的hypothesis set的vc dimension是有限的，而且我们有足够多的数据，而且我们的算法又能够找到一个<span class="math inline">\(E_{in}\)</span>很小的hypothesis，那我们就大概可以说我们学到了东西。</p>
+<p>今天我们就从这里出发，对于在推导vc bound中的假设，我们考虑怎样放宽它们，来让我们对vc bound的了解能够放宽到更多的问题上。</p>
+<p>我们先来复习一下我们学过的learning flow： <img src="http://oky5aqxds.bkt.clouddn.com/8-1.png" alt="图8-1"></p>
+<p>通过前面的学习，我们知道，好的hypothesis set是vc dimension最finite的，好的hypothesis是<span class="math inline">\(E_{in}\)</span>是最低的。经过几个礼拜的推导，我们知道在这样的情况下，我们是能够做到学习的。那如果有了noise的情况下，好像我们也还可以设计机器学习算法（例如pocket算法），但是这对我们之前理论的推导会不会产生影响呢？这就是现在我们的课题。</p>
+<p>来看noise的一些例子： <img src="http://oky5aqxds.bkt.clouddn.com/8-2.png" alt="图8-2"></p>
+<p><em>问题：如果customer information错了，但并没有影响它的label，这种情况下还算noise吗？</em></p>
+<p>所以不管是input x还是output y，都可能有noise。那有这些noise的情况下，我们的vc bound还是不是可以很好地作用呢？</p>
+<p>为了回答这个问题，我们要从vc bound的核心 - 估计罐子中橘色弹珠的比例出发：</p>
+<p>之前我们研究的都是<strong>确定性（deterministic）</strong>弹珠，即：</p>
+<ul>
+<li>弹珠<span class="math inline">\(\mathbf{x} \sim P(\mathbf{x})\)</span></li>
+<li>确定的颜色由<span class="math inline">\([f(\mathbf{x}) \neq h(\mathbf{x})]\)</span>决定</li>
+</ul>
+<p>而有了noise之后，我们更像是在研究<strong>非确定性（non-deterministic）</strong>的弹珠：</p>
+<ul>
+<li>弹珠<span class="math inline">\(\mathbf{x} \sim P(\mathbf{x})\)</span></li>
+<li>不确定的颜色<span class="math inline">\([y \neq h(\mathbf{x})]\)</span>，其中<span class="math inline">\(y \sim P(y|\mathbf{x})\)</span></li>
+</ul>
+<p>也就是说，这个弹珠的颜色是变来变去的。比如60%的时间是绿色，40%的时间是橘色等等。但是整个罐子看，还是会有一个橘色弹珠的比例的。我们还是可以抽样，并记录抽出弹珠的瞬间橘色弹珠的比例。这种会变色的弹珠，我们称为probablistic marble。对应到学习问题中，就是有noise的情形，也就是说label会变来变去。既然我们还是可以用抽样的方式估计弹珠比例的话，那无论是deterministic还是probablistic的弹珠，vc bound都成立： <img src="http://oky5aqxds.bkt.clouddn.com/8-4.png" alt="图8-4"></p>
+<p>整合一下，就是说只要我们的每个example（<span class="math inline">\((\mathbf{x}, y)\)</span>）在training和test过程中都i.i.d.地来自某个分布<span class="math inline">\(P(\mathbf{x}, y)\)</span>的话，那我们整个的vc bound的架构都是成立的。</p>
+<p>我们一般把<span class="math inline">\(P(\mathbf{x}, y)\)</span>叫做<strong>target distribution</strong>：</p>
+<ul>
+<li>可以被看做理想的mini-target + noise
+<ul>
+<li>比如<span class="math inline">\(P(o|\mathbf{x}) = 0.7, P(x|\mathbf{x}) = 0.3\)</span></li>
+<li>理想的mini-target <span class="math inline">\(f(\mathbf{x}) = o\)</span></li>
+<li>noise的水平就是0.3</li>
+</ul></li>
+<li>之前用的deterministic target f是target distribution的一种特殊情况：
+<ul>
+<li><span class="math inline">\(P(y|\mathbf{x}) = 1\)</span>，当<span class="math inline">\(y = f(\mathbf{x})\)</span>时</li>
+<li><span class="math inline">\(P(y|\mathbf{x}) = 0\)</span>，当<span class="math inline">\(y \neq f(\mathbf{x})\)</span>时</li>
+</ul></li>
+</ul>
+<p>今后在使用target distribution时，和我们之前使用target function并没有什么不一样。</p>
+<p>今后我们学习的目的就是：在那些经常出现的输入点（相对于<span class="math inline">\(P(\mathbf{x}\)</span>））而言，我们要尽量预测的准一点（相对于<span class="math inline">\(P(y|\mathbf{x})\)</span>）.</p>
+<p>现在，我们有有了新的learning flow： <img src="http://oky5aqxds.bkt.clouddn.com/8-5.png" alt="图8-5"></p>
+<p>这样一来，我们就解释了pocket算法，因为即使在有noise的情况下，vc bound还是成立的。</p>
+<h2 id="error-measure">Error Measure</h2>
+<p>在整个learning flow中，我们一直有一步，就是衡量g和f一不一样。</p>
+<p>在之前，我们衡量的标准是<span class="math inline">\(E_{out}\)</span>： <span class="math display">\[ E_{out}(g) = \epsilon_{\mathbf{x} \sim P}[g(\mathbf{x}) \neq f(\mathbf{x})] \]</span></p>
+<p><em>注：这里的<span class="math inline">\(\mathbf{x} \sim P\)</span>是指按照P从X中sample出<span class="math inline">\(\mathbf{x}。\)</span></em></p>
+<p>更一般地说，我们要有一个衡量误差的方式：<span class="math inline">\(E(g, f)\)</span>。</p>
+<p>我们之前使用的E有三个特性：</p>
+<ul>
+<li>out-of-sample：还没有看过，未来抽样出来的<span class="math inline">\(\mathbf{x}\)</span></li>
+<li>pointwise：可以在单个<span class="math inline">\(\mathbf{x}\)</span>上衡量，然后做抽样的平均</li>
+<li>classification：我们之前研究的只是classification，所以看的只是prediction是否等于target。（通常把classification error叫做‘0/1 error’）</li>
+</ul>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[机器学习基石第七讲：The VC Dimension 笔记]]></title>
       <url>http://gtbai.github.io/2017/02/20/mlfound-7/</url>
       <content type="html"><![CDATA[<p>今天我们要讲的是VC Dimension，顾名思义，是和上次讲的VC Bound有关系的。</p>
