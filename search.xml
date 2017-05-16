@@ -4,6 +4,24 @@
   
     
     <entry>
+      <title><![CDATA[Safari中印象笔记·剪藏插件重新登录问题解决方法]]></title>
+      <url>http://gtbai.github.io/2017/05/17/Safari%E4%B8%AD%E5%8D%B0%E8%B1%A1%E7%AC%94%E8%AE%B0%E5%89%AA%E8%97%8F%E6%8F%92%E4%BB%B6%E9%87%8D%E6%96%B0%E7%99%BB%E5%BD%95%E9%97%AE%E9%A2%98%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/</url>
+      <content type="html"><![CDATA[<p>印象笔记（Evernote）是个好东西，其中有个最重要的原因就是它强大的浏览器剪藏插件（Evernote Web Clipper）。不过在macOS系统下Safari中的Evernote Web Clipper会有一个<strong>重新登录</strong>的问题。</p>
+<p>具体来说，如果点击剪藏插件进行登录，那么下一次打开Safari的时候，插件会显示未登录。于是每一次打开浏览器后点击插件进行剪藏时都要重新登录，哪怕是有Safari的钥匙串，也会显得很麻烦。</p>
+<p>具体的解决方法如下：</p>
+<ol style="list-style-type: decimal">
+<li>打开Evernote的官网，国际版用户点击<a href="https://evernote.com/" target="_blank" rel="external">这里</a>，国内版印象笔记用户点击<a href="https://www.yinxiang.com/" target="_blank" rel="external">这里</a>。</li>
+<li>选中保存登录信息30天，登录账号。</li>
+<li>这时你的剪藏插件就显示登录了，然后就算是关闭Safari重新打开，也会显示登录的状态。</li>
+</ol>
+<p><em>参考链接：</em></p>
+<ul>
+<li><a href="https://medium.com/@kingboy9525/safari浏览器的evernote-web-clipper每次都需要重新登录的解决方法-a82f63363909" target="_blank" rel="external">safari浏览器的evernote-web-clipper每次都需要重新登录的解决方法</a></li>
+</ul>
+]]></content>
+    </entry>
+    
+    <entry>
       <title><![CDATA[Sublime Text中的Project]]></title>
       <url>http://gtbai.github.io/2017/04/10/Sublime-Text%E4%B8%AD%E7%9A%84Project/</url>
       <content type="html"><![CDATA[<p>在学会使用Sublime Text（以下简称为ST）的Project功能之前，你一定有过这样的经历：</p>
